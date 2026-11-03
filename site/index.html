@@ -1,0 +1,721 @@
+<title>Compagnie Guides VDA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: bandeau marine collant + onglets ; accueil éditorial (photo, croix), espaces de travail en cartes sobres sur fond bleuté */
+:root{
+  --bg:#f4f7fc; --surface:#ffffff; --sky:#e7eefb; --ink:#0f1d40; --muted:#56628a; --line:#d9e1f0;
+  --navy:#13245a; --navy-ink:#ffffff; --blue:#2453c4; --blue-ink:#ffffff; --focus:#5b8cff;
+  --st-non:#7a85a6; --st-contacte:#b7791f; --st-accepte:#1f8a4c; --st-refus:#c2413a;
+  --st-non-bg:#eef1f7; --st-contacte-bg:#fbf1df; --st-accepte-bg:#e2f4ea; --st-refus-bg:#fbe7e5;
+  --shadow:0 1px 2px rgba(19,36,90,.06),0 6px 20px rgba(19,36,90,.06);
+  --f-display:"Marcellus","Cormorant Garamond",Georgia,serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1126; --surface:#111a35; --sky:#16214a; --ink:#e7ecf9; --muted:#9ca8cf; --line:#24315a;
+  --navy:#0b1636; --navy-ink:#ffffff; --blue:#7ea2ff; --blue-ink:#0a1126; --focus:#9db8ff;
+  --st-non:#9aa5c7; --st-contacte:#e6b155; --st-accepte:#5fcf8c; --st-refus:#ef7b72;
+  --st-non-bg:#1a2447; --st-contacte-bg:#33280f; --st-accepte-bg:#0f3021; --st-refus-bg:#3a1714;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1126; --surface:#111a35; --sky:#16214a; --ink:#e7ecf9; --muted:#9ca8cf; --line:#24315a;
+  --navy:#0b1636; --navy-ink:#ffffff; --blue:#7ea2ff; --blue-ink:#0a1126; --focus:#9db8ff;
+  --st-non:#9aa5c7; --st-contacte:#e6b155; --st-accepte:#5fcf8c; --st-refus:#ef7b72;
+  --st-non-bg:#1a2447; --st-contacte-bg:#33280f; --st-accepte-bg:#0f3021; --st-refus-bg:#3a1714;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--navy)}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy);color:var(--navy-ink)}
+.top .row{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;margin-right:auto}
+.brand svg{width:30px;height:30px;flex:none}
+.brand b{font-family:var(--f-display);font-weight:400;font-size:1.2rem;letter-spacing:.04em}
+.brand small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;max-width:100%}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{color:var(--navy-ink);text-decoration:none;padding:7px 12px;border-radius:999px;white-space:nowrap;font-weight:500;font-size:.95rem;opacity:.82}
+nav.tabs a:hover{opacity:1;background:rgba(255,255,255,.08)}
+nav.tabs a[aria-current="page"]{opacity:1;background:#ffffff;color:#13245a}
+nav.tabs .sep{width:1px;background:rgba(255,255,255,.25);margin:6px 4px;flex:none}
+.stripe{height:4px;background:repeating-linear-gradient(90deg,var(--navy) 0 18px,#ffffff 18px 36px)}
+
+main{padding-block:28px 64px}
+.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center;padding-block:12px 36px}
+.hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05;color:var(--ink)}
+.hero p.lead{font-size:1.15rem;color:var(--muted);max-width:52ch}
+.hero .ph{position:relative;border-radius:4px;overflow:hidden;aspect-ratio:4/3;max-width:100%;box-shadow:var(--shadow)}
+.hero .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.hero .ph::after{content:"";position:absolute;inset:10px;border:1px solid rgba(255,255,255,.7);pointer-events:none}
+.crossrule{display:flex;align-items:center;gap:12px;color:var(--blue);margin-block:18px}
+.crossrule::before,.crossrule::after{content:"";height:1px;background:var(--line);flex:1}
+.crossrule svg{width:18px;height:18px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+
+section.block{padding-block:28px}
+section.block > h2{font-size:1.8rem;margin-bottom:6px}
+.teams5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}
+.teamcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px;transition:transform .15s,border-color .15s}
+.teamcard:hover{transform:translateY(-2px);border-color:var(--blue)}
+.teamcard .t{font-family:var(--f-display);font-size:1.35rem}
+.teamcard svg{width:22px;height:22px;color:var(--blue)}
+.mosaic{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:8px;margin-top:18px}
+.mosaic img{width:100%;height:100%;object-fit:cover;border-radius:3px;display:block}
+.mosaic .tall{grid-row:span 2}
+.mosaic .wide{grid-column:span 2}
+footer{background:var(--navy);color:var(--navy-ink);padding-block:28px}
+footer .wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+footer svg{width:26px;height:26px}
+
+/* generic UI */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--blue);background:var(--blue);color:var(--blue-ink);padding:8px 14px;border-radius:8px;font-weight:600;cursor:pointer;text-decoration:none;font-size:.95rem}
+.btn.ghost{background:transparent;color:var(--blue)}
+.btn.sm{padding:4px 10px;font-size:.85rem}
+.btn.danger{border-color:var(--st-refus);background:transparent;color:var(--st-refus)}
+.icon-btn{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:.85rem}
+.icon-btn:hover{background:var(--sky);color:var(--ink)}
+.pagehead{display:flex;gap:16px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+.pagehead h1{font-size:clamp(1.8rem,4vw,2.5rem)}
+.subtabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto;scrollbar-width:thin}
+.subtabs button{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}
+.subtabs button[aria-selected="true"]{color:var(--blue);border-bottom-color:var(--blue)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card h3{font-size:1.25rem;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar .grow{flex:1;min-width:180px}
+input[type=text],input[type=search],input[type=number],input[type=date],input[type=password],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+textarea{min-height:80px;resize:vertical}
+label.f{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.9rem}
+label.f span.h{font-weight:400;color:var(--muted);font-size:.82rem}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;padding:2px 9px;border-radius:999px;background:var(--sky);color:var(--ink);font-weight:600;white-space:nowrap}
+.pill.chef{background:var(--navy);color:#fff}
+.meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.note{background:var(--sky);border-radius:8px;padding:8px 10px;font-size:.9rem;margin-top:8px}
+.banner{background:var(--sky);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:16px;font-size:.92rem}
+
+/* programme */
+.prog{display:flex;flex-direction:column;gap:10px}
+.ev{display:grid;grid-template-columns:76px 1fr auto;gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.ev .d{text-align:center;border-right:1px solid var(--line);padding-right:12px}
+.ev .d .n{font-family:var(--f-display);font-size:1.9rem;line-height:1}
+.ev .d .m{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.ev h3{font-size:1.15rem}
+.ev .desc{white-space:pre-wrap;margin-top:6px;font-size:.95rem}
+.ev.past{opacity:.6}
+
+/* tâches */
+.tasks{display:flex;flex-direction:column;gap:8px}
+.task{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.task input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--blue)}
+.task.done .tx{text-decoration:line-through;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;font-weight:500;font-size:.9rem}
+.chips input{accent-color:var(--blue)}
+.chips label:has(input:checked){background:var(--sky);border-color:var(--blue)}
+
+/* lieux */
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:10px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px}
+.seg button .c{font-family:var(--f-display);font-size:1.6rem;line-height:1}
+.seg button[aria-pressed="true"]{border-width:2px}
+.seg .s-non[aria-pressed="true"]{border-color:var(--st-non);background:var(--st-non-bg)}
+.seg .s-contacte[aria-pressed="true"]{border-color:var(--st-contacte);background:var(--st-contacte-bg)}
+.seg .s-accepte[aria-pressed="true"]{border-color:var(--st-accepte);background:var(--st-accepte-bg)}
+.seg .s-refus[aria-pressed="true"]{border-color:var(--st-refus);background:var(--st-refus-bg)}
+.lieux{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.lieu{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--st-non);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.lieu.st-contacte{border-left-color:var(--st-contacte)}
+.lieu.st-accepte{border-left-color:var(--st-accepte)}
+.lieu.st-refus{border-left-color:var(--st-refus)}
+.lieu h3{font-size:1.1rem}
+.lieu .kv{font-size:.88rem;display:grid;grid-template-columns:auto 1fr;gap:2px 8px;overflow-wrap:anywhere}
+.lieu .kv dt{color:var(--muted)}
+.lieu .kv dd{margin:0}
+.lieu .foot{display:flex;gap:8px;align-items:center;margin-top:auto;padding-top:6px}
+.lieu .foot select{flex:1}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--st-non-bg);border:2px solid var(--st-non)}
+.dot.st-contacte{background:var(--st-contacte);border-color:var(--st-contacte)}
+.dot.st-accepte{background:var(--st-accepte);border-color:var(--st-accepte)}
+.dot.st-refus{background:var(--st-refus);border-color:var(--st-refus)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--sky)}
+td.c,th.c{text-align:center}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-bottom:10px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+
+/* budget & repas */
+.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.totals div{background:var(--sky);border-radius:8px;padding:10px 12px}
+.totals b{display:block;font-family:var(--f-display);font-size:1.5rem;font-weight:400;font-variant-numeric:tabular-nums}
+.meals{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.meal{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:8px}
+.meal .hd{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.courses{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.courses li{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;font-size:.92rem}
+.courses li.pris span.a{text-decoration:line-through;color:var(--muted)}
+.courses input{accent-color:var(--blue);width:17px;height:17px}
+
+/* prochain rendez-vous, fiche */
+.nextrdv{display:grid;grid-template-columns:240px 1fr;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.nr-date{background:var(--navy);color:#fff;padding:20px;display:flex;flex-direction:column;gap:8px;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:14px 14px}
+.nr-day{font-family:var(--f-display);font-size:1.5rem;line-height:1.2;text-transform:capitalize}
+.nr-body{padding:20px;min-width:0}.nr-body h3{font-size:1.5rem;margin-bottom:10px}
+.nr-kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}.nr-kv dt{color:var(--muted);font-size:.9rem}.nr-kv dd{margin:0;font-weight:600}
+.fiche{display:flex;flex-direction:column;gap:16px}
+.fiche fieldset{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:8px;margin:0}
+.fiche legend{font-weight:600;font-size:.9rem;padding:0 6px}
+#slots{display:flex;flex-direction:column;gap:6px}.slot{display:grid;grid-template-columns:140px 1fr auto;gap:6px}
+.fq{margin:12px 0 0;display:flex;flex-direction:column;gap:2px}.fq dt{font-weight:600;font-size:.88rem;color:var(--blue);margin-top:10px}.fq dd{margin:0;white-space:pre-wrap}
+@media (max-width:640px){.nextrdv{grid-template-columns:1fr}.slot{grid-template-columns:96px 1fr auto}.seg[style]{grid-template-columns:repeat(2,1fr)!important}}
+/* modal + toast */
+.ov{position:fixed;inset:0;background:rgba(8,14,36,.55);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
+.modal{background:var(--surface);color:var(--ink);border-radius:12px;width:100%;max-width:560px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:14px}
+.modal h2{font-size:1.5rem}
+.modal .acts{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fgrid .full{grid-column:1/-1}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;z-index:60;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+.toast.err{background:var(--st-refus)}
+.lock{max-width:440px;margin:40px auto;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.lock svg{width:48px;height:48px;color:var(--blue)}
+.lock form{display:flex;gap:8px;width:100%}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr}
+  .teams5{grid-template-columns:repeat(2,1fr)}
+  .mosaic{grid-template-columns:repeat(2,1fr);grid-auto-rows:150px}
+  .grid2{grid-template-columns:1fr}
+  .seg{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:520px){
+  .ev{grid-template-columns:58px 1fr}
+  .ev .acts{grid-column:1/-1;justify-self:end}
+  .fgrid{grid-template-columns:1fr}
+  .totals{grid-template-columns:1fr 1fr 1fr}
+  .totals b{font-size:1.15rem}
+  .brand small{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="croix" viewBox="0 0 24 24"><path fill="currentColor" d="M9.2 1h5.6l-1.1 6.2 6.2-1.1v5.6l-6.2-1.1 1.1 6.2h-5.6l1.1-6.2-6.2 1.1V6.1l6.2 1.1z" transform="translate(0 3)"/></symbol>
+    <symbol id="croix-o" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M9.2 1h5.6l-1.1 6.2 6.2-1.1v5.6l-6.2-1.1 1.1 6.2h-5.6l1.1-6.2-6.2 1.1V6.1l6.2 1.1z" transform="translate(0 3)"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap row">
+    <a class="brand" href="#accueil">
+      <svg aria-hidden="true"><use href="#croix"/></svg>
+      <span><b>Compagnie Guides VDA</b><small>Groupe Ville-d’Avray – Sèvres · SUF</small></span>
+    </a>
+    <nav class="tabs" id="tabs" aria-label="Sections du site"></nav>
+  </div>
+  <div class="stripe" aria-hidden="true"></div>
+</header>
+
+<main id="main" class="wrap"></main>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;gap:12px;align-items:center">
+      <svg aria-hidden="true"><use href="#croix"/></svg>
+      <div><div style="font-family:var(--f-display);font-size:1.1rem">Compagnie Guides VDA</div><div class="small" style="opacity:.75">Groupe Ville-d’Avray – Sèvres · Bienheureux Frédéric Ozanam · Scouts Unitaires de France</div></div>
+    </div>
+    <div class="small" style="opacity:.75">Serval · Renard · Faucon · Panthères · Ocelot</div>
+  </div>
+</footer>
+
+<div id="modal-root"></div>
+
+<script>
+(function(){
+"use strict";
+const TEAMS=[{id:'serval',nom:'Serval'},{id:'renard',nom:'Renard'},{id:'faucon',nom:'Faucon'},{id:'pantheres',nom:'Panthères'},{id:'ocelot',nom:'Ocelot'}];
+const TEAM=Object.fromEntries(TEAMS.map(t=>[t.id,t]));
+const STATUTS=[{id:'non',label:'Non contacté'},{id:'contacte',label:'Contacté'},{id:'accepte',label:'Accepté'},{id:'refus',label:'Refus'}];
+const STL=Object.fromEntries(STATUTS.map(s=>[s.id,s.label]));
+const TYPES=['Réunion','Week-end','Camp','Sortie','Messe','Autre'];
+const MOMENTS=['Petit-déjeuner','Déjeuner','Goûter','Dîner'];
+const CATS=['Nourriture','Transport','Hébergement','Matériel','Activités','Autre'];
+const DEFAULT_CODE='cheftaines';
+
+const S={db:null,dbState:'loading',fiches:[],prog:[],taches:[],lieux:[],statuts:{},equipes:{},budget:[],repas:[],config:{},
+  sub:{},chefOK:false,filters:{}};
+try{S.chefOK=sessionStorage.getItem('chefOK')==='1'}catch(e){}
+
+const $=s=>document.querySelector(s);
+const main=$('#main');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+const eur=n=>(Number(n)||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+function fmtD(iso,opt){if(!iso)return '';const d=new Date(iso+'T12:00:00');if(isNaN(d))return esc(iso);return d.toLocaleDateString('fr-FR',opt||{weekday:'short',day:'numeric',month:'short'})}
+function range(a,b){if(!a)return 'Date à fixer';if(!b||b===a)return fmtD(a,{weekday:'long',day:'numeric',month:'long'});return fmtD(a)+' → '+fmtD(b)}
+const X='<svg width="14" height="14" aria-hidden="true"><use href="#croix"/></svg>';
+const sortProg=a=>[...a].sort((x,y)=>(x.debut||x.periode||'9999').localeCompare(y.debut||y.periode||'9999'));
+const weekends=()=>sortProg(S.prog.filter(e=>e.type==='Week-end'||e.type==='Camp'||e.type==='Sortie'));
+const weName=id=>{if(!id||id==='general')return 'Général';const e=S.prog.find(p=>p.id===id);return e?e.titre:'Événement supprimé'};
+const members=t=>(S.equipes[t]&&S.equipes[t].membres)||[];
+
+/* ---------- toast & modal ---------- */
+let toastT;
+function toast(msg,err){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';t.setAttribute('role','status');document.body.appendChild(t)}
+  t.textContent=msg;t.classList.toggle('err',!!err);t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},2600)}
+function errMsg(e){const c=e&&e.code;if(c==='invalid_argument')return "Enregistrement refusé : vous n'avez peut-être pas les droits d'écriture sur ce site.";
+  if(c==='quota_exceeded')return 'La base est pleine : supprimez d’anciens éléments.';return "Impossible d'enregistrer pour l'instant. Réessayez dans un moment."}
+async function save(p,ok){try{await p;if(ok)toast(ok)}catch(e){console.error(e);toast(errMsg(e),true)}}
+function needDb(){if(!S.db){toast('Connectez-vous à claude.ai pour enregistrer des modifications.',true);return false}return true}
+
+function openModal(title,body,onSubmit,submitLabel){
+  const root=$('#modal-root');
+  root.innerHTML=`<div class="ov" data-close><form class="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle"><h2 id="mtitle">${esc(title)}</h2>${body}
+  <div class="acts"><button type="button" class="btn ghost" data-close>Annuler</button><button class="btn" type="submit">${esc(submitLabel||'Enregistrer')}</button></div></form></div>`;
+  const form=root.querySelector('form');
+  root.querySelector('.ov').addEventListener('click',e=>{if(e.target.hasAttribute('data-close'))closeModal()});
+  form.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(form);const r=await onSubmit(fd,form);if(r!==false)closeModal()});
+  const first=form.querySelector('input,select,textarea');if(first)first.focus();
+}
+function closeModal(){$('#modal-root').innerHTML='';flushRender()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal-root').innerHTML)closeModal()});
+const opt=(v,l,sel)=>`<option value="${esc(v)}"${sel?' selected':''}>${esc(l)}</option>`;
+const weOptions=sel=>opt('general','Général (hors week-end)',sel==='general'||!sel)+weekends().map(e=>opt(e.id,`${e.titre} · ${fmtD(e.debut)}`,sel===e.id)).join('');
+
+/* ---------- routing ---------- */
+const VIEWS=['accueil','programme','fiche','cheftaines',...TEAMS.map(t=>t.id)];
+function view(){const h=location.hash.replace('#','');return VIEWS.includes(h)?h:'accueil'}
+function renderTabs(){const v=view();const L=(id,l)=>`<a href="#${id}"${v===id?' aria-current="page"':''}>${l}</a>`;
+  $('#tabs').innerHTML=L('accueil','Accueil')+L('programme','Programme')+L('fiche','Fiche de préparation')+'<span class="sep" aria-hidden="true"></span>'+L('cheftaines','Espace cheftaines')+'<span class="sep" aria-hidden="true"></span>'+
+  TEAMS.map(t=>L(t.id,esc(t.nom))).join('')}
+window.addEventListener('hashchange',()=>{renderAll(true);window.scrollTo(0,0)});
+
+/* render deferral while typing */
+let pending=false;
+function isTyping(){const a=document.activeElement;return a&&main.contains(a)&&(a.tagName==='TEXTAREA'||(a.tagName==='INPUT'&&/^(text|search|number|password|date|time)$/.test(a.type)))}
+function render(){if(view()==='fiche'&&main.querySelector('#ficheform,[data-act=fiche-again]'))return;if(isTyping()){pending=true;return}renderAll()}
+function flushRender(){if(pending){pending=false;render()}}
+main.addEventListener('focusout',()=>setTimeout(flushRender,0));
+
+function renderAll(force){renderTabs();const v=view();let html;
+  if(v==='accueil')html=vAccueil();else if(v==='programme')html=vProgramme();else if(v==='fiche')html=vFiche();else if(v==='cheftaines')html=vChef();else html=vTeam(v);
+  const y=window.scrollY;main.innerHTML=html;if(!force)window.scrollTo(0,y);applySearch()}
+
+/* ---------- ACCUEIL ---------- */
+const hh=t=>t?esc(t).replace(':',' h '):'';
+function horaires(o){const p=[];if(o.heureArrivee)p.push('Arrivée '+hh(o.heureArrivee));if(o.heureSortie)p.push('Sortie '+hh(o.heureSortie));if(o.rdv)p.push('Rendez-vous : '+esc(o.rdv));return p.join(' · ')}
+function teamLines(e,only){const eq=e.equipes||{};return TEAMS.filter(t=>(!only||only===t.id)&&eq[t.id]&&(eq[t.id].heureArrivee||eq[t.id].heureSortie||eq[t.id].rdv))
+  .map(t=>`<div class="small"><b>${esc(t.nom)}</b> · ${horaires(eq[t.id])}</div>`).join('')}
+function nextEvent(){return sortProg(S.prog).find(e=>(e.fin||e.debut||'9999')>=today())}
+function nextCard(){
+  if(S.dbState==='off')return `<div class="empty">Le prochain rendez-vous s’affiche ici pour les familles connectées au site.</div>`;
+  if(S.dbState==='loading')return `<div class="empty">Chargement du prochain rendez-vous…</div>`;
+  const e=nextEvent();if(!e)return `<div class="empty">Pas de rendez-vous à venir pour le moment.</div>`;
+  const tl=teamLines(e);
+  return `<div class="nextrdv"><div class="nr-date"><span class="eyebrow" style="color:inherit;opacity:.8">Prochain rendez-vous</span><div class="nr-day">${range(e.debut,e.fin)}</div></div>
+   <div class="nr-body"><h3>${esc(e.titre)}</h3>
+    <dl class="nr-kv"><dt>Lieu</dt><dd>${esc(e.lieu)||'<span class="muted">Communiqué prochainement</span>'}</dd>
+    <dt>Rendez-vous</dt><dd>${esc(e.rdv)||'<span class="muted">À venir</span>'}</dd>
+    <dt>Arrivée</dt><dd>${hh(e.heureArrivee)||'<span class="muted">À venir</span>'}</dd>
+    <dt>Sortie</dt><dd>${hh(e.heureSortie)||'<span class="muted">À venir</span>'}</dd></dl>
+    ${tl?`<div style="margin-top:10px;display:flex;flex-direction:column;gap:2px"><div class="eyebrow">Par équipe</div>${tl}</div>`:''}
+    ${e.description?`<div class="desc" style="margin-top:8px">${esc(e.description)}</div>`:''}</div></div>`}
+
+function vAccueil(){
+  return `
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Groupe Ville-d’Avray – Sèvres · Bienheureux Frédéric Ozanam</div>
+      <h1 style="margin-top:10px">Une compagnie,<br>cinq équipes,<br>une même promesse.</h1>
+      <div class="crossrule" aria-hidden="true"><svg><use href="#croix"/></svg></div>
+      <p class="lead">La compagnie réunit les guides de Ville-d’Avray et Sèvres autour de la vie d’équipe, des week-ends en forêt, des camps et de la prière. Parents, retrouvez ici le lieu et les horaires du prochain rendez-vous.</p>
+      <div class="cta"><a class="btn" href="#programme">Programme de l’année</a><a class="btn ghost" href="#fiche">Fiche de préparation</a></div>
+    </div>
+    <div class="ph"><img src="img/p4.jpg" alt="Messe en forêt avec la compagnie en uniforme"></div>
+  </section>
+
+  <section class="block">
+    ${nextCard()}
+    <p class="small" style="margin-top:10px"><a href="#programme" style="color:var(--blue)">Voir tout le programme 2026-2027 →</a></p>
+  </section>
+
+  <section class="block">
+    <div class="eyebrow">La compagnie</div><h2>Nos cinq équipes</h2>
+    <p class="muted small" style="margin:0">Chaque guide vit l’aventure au sein de son équipe, avec sa cheftaine d’équipe et sa seconde.</p>
+    <div class="teams5">${TEAMS.map(t=>`<a class="teamcard" href="#${t.id}"><svg aria-hidden="true"><use href="#croix-o"/></svg><span class="t">${esc(t.nom)}</span><span class="small muted">Espace équipe →</span></a>`).join('')}</div>
+  </section>
+
+  <section class="block">
+    <div class="eyebrow">En images</div><h2>La vie de compagnie</h2>
+    <div class="mosaic">
+      <img class="tall" src="img/p3.jpg" alt="Procession aux flambeaux au crépuscule" loading="lazy">
+      <img class="wide" src="img/p1.jpg" alt="Cérémonie de la compagnie au coucher du soleil" loading="lazy" style="object-position:center 30%">
+      <img class="tall" src="img/p6.jpg" alt="Une équipe en forêt" loading="lazy">
+      <img src="img/p5.jpg" alt="Flambeaux dans la nuit" loading="lazy">
+      <img src="img/p8.jpg" alt="Deux guides souriantes" loading="lazy">
+      <img class="wide" src="img/p7.jpg" alt="Pizzas faites au camp" loading="lazy" style="object-position:center 60%">
+      <img class="wide" src="img/p2.jpg" alt="Pause avec un chien pendant la marche" loading="lazy" style="object-position:center 40%">
+    </div>
+  </section>`;
+}
+
+function evHtml(e,mode){
+  const d=e.debut?new Date(e.debut+'T12:00:00'):null;const past=(e.fin||e.debut||'9999')<today();
+  const h=horaires(e);const tl=teamLines(e,TEAM[mode]?mode:null);
+  let acts='<div></div>';
+  if(mode==='chef')acts=`<div class="acts"><button class="icon-btn" data-act="ev-edit" data-id="${e.id}">Modifier</button><button class="icon-btn" data-act="ev-del" data-id="${e.id}">Supprimer</button></div>`;
+  else if(TEAM[mode])acts=`<div class="acts"><button class="btn ghost sm" data-act="ev-team" data-id="${e.id}" data-team="${mode}">Horaires & RDV</button></div>`;
+  return `<article class="ev${past?' past':''}">
+    <div class="d"><div class="n">${d?d.getDate():'–'}</div><div class="m">${d?d.toLocaleDateString('fr-FR',{month:'short'}):'à fixer'}</div></div>
+    <div style="min-width:0"><div class="meta" style="margin:0 0 4px"><span class="pill${/Week-end|Camp/.test(e.type)?' chef':''}">${esc(e.type||'Réunion')}</span><span class="small muted">${range(e.debut,e.fin)}</span></div>
+      <h3>${esc(e.titre)}</h3>
+      ${e.lieu?`<div class="small muted">Lieu : ${esc(e.lieu)}</div>`:''}
+      ${h?`<div class="small">${h}</div>`:''}
+      ${tl?`<div style="margin-top:6px;display:flex;flex-direction:column;gap:2px">${tl}</div>`:''}
+      ${e.description?`<div class="desc">${esc(e.description)}</div>`:''}</div>
+    ${acts}
+  </article>`;
+}
+
+/* ---------- PROGRAMME PUBLIC ---------- */
+function vProgramme(){const p=sortProg(S.prog);
+  let body;
+  if(S.dbState==='off')body=`<div class="empty">Le programme s’affiche pour les familles et les guides connectées au site.</div>`;
+  else if(S.dbState==='loading')body=`<div class="empty">Chargement du programme…</div>`;
+  else body=p.length?`<div class="prog">${p.map(e=>evHtml(e,false)).join('')}</div>`:`<div class="empty">Le programme n’est pas encore publié.</div>`;
+  return `<div class="pagehead"><div><div class="eyebrow">Année 2026-2027</div><h1>Programme de la compagnie</h1></div></div>
+  <div style="margin-bottom:22px">${nextCard()}</div>
+  <h2 style="font-size:1.5rem;margin-bottom:12px">Toute l’année</h2>${body}`}
+
+/* ---------- FICHE DE PRÉPARATION (publique, réponses visibles des cheftaines seulement) ---------- */
+const FICHE_Q=[
+  ['delegation','Qui prépare quoi ?','Qu’est-ce que tu as délégué et à qui ?'],
+  ['objectifs','Quels sont les objectifs de la sortie ? À court et long terme ?','Quels sont les objectifs de cette sortie par rapport à l’année et à l’imaginaire ?'],
+  ['parler','De quoi veux-tu parler aux guides ?','(progression…)'],
+  ['technique','Sur quelle technique veux-tu mettre l’accent à cette sortie ?',''],
+  ['ressenti','As-tu été angoissée vis-à-vis de la sortie ou es-tu sereine ?','']];
+const slotRow=()=>`<div class="slot"><input type="text" name="slot_h" placeholder="9h30-10h30" aria-label="Horaire"><input type="text" name="slot_a" placeholder="Activité" aria-label="Activité"><button type="button" class="icon-btn" data-slot-del aria-label="Retirer cette ligne">×</button></div>`;
+function vFiche(){
+  return `<div class="pagehead"><div><div class="eyebrow">Pour les cheftaines d’équipe et les secondes</div><h1>Fiche de préparation de la sortie</h1></div></div>
+  <div class="banner">Remplis cette fiche avant chaque sortie d’équipe. Elle est envoyée directement aux cheftaines et n’apparaît pas sur le site public.</div>
+  <form id="ficheform" class="card fiche" autocomplete="off">
+   <div class="fgrid">
+    <label class="f">Équipe<select name="equipe" required>${opt('','Choisir l’équipe',true)}${TEAMS.map(t=>opt(t.id,t.nom)).join('')}</select></label>
+    <label class="f">Remplie par<input type="text" name="auteur" required placeholder="Ton prénom"></label>
+    <label class="f">Sortie du<input type="date" name="date" required></label>
+    <label class="f">Lieu et horaires de la sortie<input type="text" name="lieuHoraires" placeholder="Lieu / 9h30-16h00"></label>
+   </div>
+   <fieldset><legend>Déroulement de la sortie et détails des activités</legend><div id="slots">${slotRow()}${slotRow()}${slotRow()}</div>
+    <button type="button" class="btn ghost sm" id="addslot" style="align-self:flex-start">${X} Ajouter une ligne</button></fieldset>
+   ${FICHE_Q.map(([k,q,h])=>`<label class="f">${q}${h?`<span class="h">${h}</span>`:''}<textarea name="${k}"></textarea></label>`).join('')}
+   <div style="display:flex;justify-content:flex-end;gap:8px"><button class="btn" type="submit">Envoyer la fiche aux cheftaines</button></div>
+  </form>`}
+function readFiche(form){const fd=new FormData(form);const H=fd.getAll('slot_h'),A=fd.getAll('slot_a');
+  const o={equipe:fd.get('equipe'),auteur:(fd.get('auteur')||'').trim(),date:fd.get('date'),lieuHoraires:(fd.get('lieuHoraires')||'').trim(),
+    deroulement:H.map((h,i)=>({h:h.trim(),a:(A[i]||'').trim()})).filter(x=>x.h||x.a)};
+  FICHE_Q.forEach(([k])=>o[k]=(fd.get(k)||'').trim());return o}
+function ficheCard(f){return `<article class="card fichecard"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:start">
+   <div><div class="eyebrow">Sortie du ${f.date?fmtD(f.date,{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'—'}</div><h3 style="margin:4px 0 0">${esc(f.lieuHoraires)||'Lieu à préciser'}</h3>
+   <div class="small muted">Remplie par ${esc(f.auteur)||'—'} · reçue le ${f.createdAt?new Date(f.createdAt).toLocaleDateString('fr-FR'):'—'}</div></div>
+   <div style="display:flex;gap:6px;align-items:center">${f.lue?'<span class="pill">Lue</span>':`<button class="btn sm" data-act="fiche-lue" data-id="${f.id}">Marquer comme lue</button>`}<button class="icon-btn" data-act="fiche-del" data-id="${f.id}">Supprimer</button></div></div>
+   ${(f.deroulement||[]).length?`<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th style="width:130px">Horaire</th><th>Déroulement</th></tr></thead><tbody>${f.deroulement.map(x=>`<tr><td style="font-variant-numeric:tabular-nums">${esc(x.h)}</td><td>${esc(x.a)}</td></tr>`).join('')}</tbody></table></div>`:''}
+   <dl class="fq">${FICHE_Q.map(([k,q])=>`<dt>${q}</dt><dd>${esc(f[k])||'<span class="muted">Pas de réponse</span>'}</dd>`).join('')}</dl></article>`}
+function chefFiches(){const cur=S.filters.ficheTeam||TEAMS[0].id;
+  const by=t=>S.fiches.filter(f=>f.equipe===t).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  return `<p class="muted small" style="margin-top:0">Les fiches envoyées par les équipes depuis l’onglet public « Fiche de préparation ».</p>
+  <div class="seg" style="grid-template-columns:repeat(5,1fr)">${TEAMS.map(t=>{const n=by(t.id),nl=n.filter(f=>!f.lue).length;return `<button aria-pressed="${t.id===cur}" class="s-contacte" data-act="fiche-team" data-v="${t.id}"><span class="c">${n.length}</span><span class="small">${esc(t.nom)}${nl?` · ${nl} non lue${nl>1?'s':''}`:''}</span></button>`}).join('')}</div>
+  ${by(cur).length?`<div style="display:flex;flex-direction:column;gap:12px">${by(cur).map(ficheCard).join('')}</div>`:`<div class="empty">Aucune fiche reçue de l’équipe ${esc(TEAM[cur].nom)}.</div>`}`}
+
+/* ---------- CHEFTAINES ---------- */
+function subtabs(key,list){const cur=S.sub[key]||list[0][0];
+  return {cur,html:`<div class="subtabs" role="tablist">${list.map(([k,l])=>`<button role="tab" aria-selected="${k===cur}" data-act="sub" data-key="${key}" data-v="${k}">${l}</button>`).join('')}</div>`}}
+function dbBanner(){if(S.dbState==='off')return `<div class="banner">Ouvrez ce site connecté·e à claude.ai pour voir et modifier les données partagées (programme, tâches, lieux, budgets).</div>`;
+  if(S.dbState==='slow')return `<div class="banner">Les données mettent du temps à arriver. Ce qui s’affiche peut ne pas être à jour.</div>`;return ''}
+
+function vChef(){
+  if(!S.chefOK)return `<div class="lock"><svg aria-hidden="true"><use href="#croix"/></svg><h1 style="font-size:2rem">Espace cheftaines</h1>
+    <p class="muted">Entrez le code de l’espace cheftaines pour gérer le programme, les tâches, les lieux de camp et les budgets.</p>
+    <form id="lockform"><input type="password" id="chefcode" name="code" placeholder="Code cheftaines" aria-label="Code cheftaines" autocomplete="off"><button class="btn" type="submit">Entrer</button></form></div>`;
+  const st=subtabs('chef',[['prog','Programme'],['taches','Tâches'],['lieux','Lieux de camp'],['budget','Budget & repas'],['fiches','Fiches de préparation'],['equipes','Équipes'],['reglages','Réglages']]);
+  let body='';
+  if(st.cur==='prog')body=chefProg();else if(st.cur==='taches')body=tasksView('chef');else if(st.cur==='lieux')body=chefLieux();
+  else if(st.cur==='budget')body=budgetView('chefs');else if(st.cur==='fiches')body=chefFiches();else if(st.cur==='equipes')body=chefEquipes();else body=chefReglages();
+  return `<div class="pagehead"><div><div class="eyebrow">Espace réservé</div><h1>Espace cheftaines</h1></div><button class="btn ghost sm" data-act="chef-out">Quitter l’espace</button></div>${dbBanner()}${st.html}${body}`;
+}
+function chefProg(){const p=sortProg(S.prog);
+  return `<div class="toolbar"><p class="muted small grow" style="margin:0">Ce que vous ajoutez ici s’affiche sur l’accueil et dans les espaces des équipes.</p><button class="btn" data-act="ev-new">${X} Ajouter un rendez-vous</button></div>
+  ${p.length?`<div class="prog">${p.map(e=>evHtml(e,'chef')).join('')}</div>`:`<div class="empty">Le programme est vide. Ajoutez la première réunion ou le prochain week-end avec « Ajouter un rendez-vous ».</div>`}`}
+
+function chefLieux(){
+  const q=S.filters.chefLieuxDep||'';const deps=[...new Set(S.lieux.map(l=>l.dep))];
+  const list=S.lieux.filter(l=>!q||l.dep===q);
+  const acc=TEAMS.map(t=>{const s=S.statuts[t.id]||{};const c={non:0,contacte:0,accepte:0,refus:0};S.lieux.forEach(l=>{c[(s[l.id]&&s[l.id].st)||'non']++});return [t,c]});
+  return `<div class="tablewrap" style="margin-bottom:16px"><table><thead><tr><th>Équipe</th><th class="num">Contactés</th><th class="num">Acceptés</th><th class="num">Refus</th></tr></thead><tbody>
+   ${acc.map(([t,c])=>`<tr><td><a href="#${t.id}">${esc(t.nom)}</a></td><td class="num">${c.contacte}</td><td class="num">${c.accepte}</td><td class="num">${c.refus}</td></tr>`).join('')}</tbody></table></div>
+  <div class="toolbar"><input class="grow" type="search" id="srch-chef" data-search=".lrow" placeholder="Rechercher un lieu, une ville, un contact…" aria-label="Rechercher un lieu">
+   <select id="dep-chef" data-filter="chefLieuxDep" aria-label="Département">${opt('','Tous les départements',!q)}${deps.map(d=>opt(d,d,d===q)).join('')}</select>
+   <button class="btn" data-act="lieu-new">${X} Ajouter un lieu</button></div>
+  <div class="legend">${STATUTS.map(s=>`<span><i class="dot st-${s.id}"></i>${s.label}</span>`).join('')}</div>
+  <div class="tablewrap"><table><thead><tr><th>Lieu</th><th>Ville</th><th>Trajet</th><th>Contact</th>${TEAMS.map(t=>`<th class="c">${esc(t.nom)}</th>`).join('')}<th></th></tr></thead><tbody>
+  ${list.map(l=>`<tr class="lrow" data-s="${esc((l.nom+' '+l.ville+' '+l.contact+' '+l.infos+' '+l.cp).toLowerCase())}"><td><b>${esc(l.nom)}</b>${l.infos?`<div class="small muted">${esc(l.infos)}</div>`:''}</td><td>${esc(l.ville)} <span class="muted small">${esc(l.cp)}</span></td><td>${esc(l.temps)}</td><td class="small">${esc(l.contact)}${l.fixe?'<br>'+esc(l.fixe):''}${l.portable?'<br>'+esc(l.portable):''}</td>
+   ${TEAMS.map(t=>{const s=(S.statuts[t.id]||{})[l.id];const v=(s&&s.st)||'non';return `<td class="c"><i class="dot st-${v}" title="${esc(t.nom)} : ${STL[v]}${s&&s.note?' — '+esc(s.note):''}"></i></td>`}).join('')}
+   <td><button class="icon-btn" data-act="lieu-edit" data-id="${l.id}">Modifier</button></td></tr>`).join('')||`<tr><td colspan="10" class="muted">La liste des lieux est vide.</td></tr>`}
+  </tbody></table></div>`}
+
+function chefEquipes(){
+  return `<p class="muted small">Composition des équipes. Ces prénoms servent à attribuer les tâches dans les espaces équipes.</p>
+  <div class="grid2" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${TEAMS.map(t=>`<div class="card"><h3>${esc(t.nom)} <span class="muted small" style="font-family:var(--f-body)">· ${members(t.id).length} guides</span></h3>
+   <ul style="list-style:none;padding:0;margin:0 0 10px;display:flex;flex-direction:column;gap:2px">${members(t.id).map((m,i)=>`<li style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span>${esc(m)}</span><button class="icon-btn" data-act="mem-del" data-team="${t.id}" data-i="${i}" aria-label="Retirer ${esc(m)}">Retirer</button></li>`).join('')||'<li class="muted small">Aucune guide.</li>'}</ul>
+   <button class="btn ghost sm" data-act="mem-add" data-team="${t.id}">${X} Ajouter une guide</button></div>`).join('')}</div>`}
+
+function chefReglages(){return `<div class="card" style="max-width:560px"><h3>Code de l’espace cheftaines</h3>
+  <p class="small muted">Le code évite que les guides ouvrent l’espace cheftaines par erreur. Ce n’est pas une protection forte : toute personne qui a accès au site et qui connaît le code peut entrer.</p>
+  <button class="btn" data-act="code-change">Changer le code</button></div>`}
+
+/* ---------- TÂCHES ---------- */
+function tasksView(scope){
+  const isChef=scope==='chef';
+  const fTeam=isChef?(S.filters.taskTeam||'all'):scope;
+  const fWe=S.filters['taskWe_'+scope]||'all';
+  let list=S.taches.filter(t=>{
+    if(isChef){if(fTeam!=='all'&&t.equipe!==fTeam)return false}
+    else if(!(t.equipe===scope||t.equipe==='toutes'))return false;
+    if(fWe!=='all'&&(t.we||'general')!==fWe)return false;return true});
+  list.sort((a,b)=>(a.echeance||'9999').localeCompare(b.echeance||'9999')||(a.createdAt||0)-(b.createdAt||0));
+  const todo=list.filter(t=>!t.fait),done=list.filter(t=>t.fait);
+  const filt=`<div class="toolbar">
+   ${isChef?`<select id="ft-team" data-filter="taskTeam" aria-label="Destinataires">${opt('all','Toutes les tâches',fTeam==='all')}${opt('toutes','Pour toutes les équipes',fTeam==='toutes')}${opt('cheftaines','Maîtrise (cheftaines)',fTeam==='cheftaines')}${TEAMS.map(t=>opt(t.id,'Équipe '+t.nom,fTeam===t.id)).join('')}</select>`:''}
+   <select id="ft-we-${scope}" data-filter="taskWe_${scope}" aria-label="Week-end">${opt('all','Tous les week-ends',fWe==='all')}${weOptions(fWe==='all'?'__':fWe)}</select>
+   <span class="grow"></span><button class="btn" data-act="task-new" data-scope="${scope}">${X} Nouvelle tâche</button></div>`;
+  const row=t=>{const canEdit=isChef||t.auteur===scope;const dest=t.equipe==='toutes'?'Toutes les équipes':t.equipe==='cheftaines'?'Maîtrise':TEAM[t.equipe]?TEAM[t.equipe].nom:'';
+    const late=!t.fait&&t.echeance&&t.echeance<today();
+    return `<div class="task${t.fait?' done':''}"><input type="checkbox" data-act="task-toggle" data-id="${t.id}" ${t.fait?'checked':''} aria-label="Marquer « ${esc(t.texte)} » comme faite">
+    <div style="min-width:0"><div class="tx">${esc(t.texte)}</div><div class="meta">
+      ${t.auteur==='chef'?'<span class="pill chef">Des cheftaines</span>':''}
+      ${isChef||t.equipe==='toutes'?`<span class="pill">${esc(dest)}</span>`:''}
+      ${(t.assignees||[]).map(a=>`<span class="pill">${esc(a)}</span>`).join('')}
+      ${t.echeance?`<span class="small ${late?'':'muted'}" style="${late?'color:var(--st-refus);font-weight:600':''}">Pour le ${fmtD(t.echeance)}</span>`:''}
+      ${t.we&&t.we!=='general'?`<span class="small muted">· ${esc(weName(t.we))}</span>`:''}</div>
+      ${t.details?`<div class="note">${esc(t.details)}</div>`:''}</div>
+    <div>${canEdit?`<button class="icon-btn" data-act="task-edit" data-id="${t.id}" data-scope="${scope}">Modifier</button><button class="icon-btn" data-act="task-del" data-id="${t.id}">Supprimer</button>`:''}</div></div>`};
+  return filt+(list.length?`<div class="tasks">${todo.map(row).join('')||'<div class="empty">Tout est fait. Bravo !</div>'}</div>
+    ${done.length?`<h3 style="font-size:1.1rem;margin:22px 0 8px" class="muted">Faites (${done.length})</h3><div class="tasks">${done.map(row).join('')}</div>`:''}`
+    :`<div class="empty">Aucune tâche pour l’instant. Créez-en une avec « Nouvelle tâche »${isChef?' : choisissez à quelle équipe elle s’adresse et le week-end concerné.':' et choisissez les guides qui s’en occupent.'}</div>`);
+}
+function taskForm(scope,t){t=t||{};const isChef=scope==='chef';
+  const dest=isChef?`<label class="f">Pour qui ?<select name="equipe">${opt('toutes','Toutes les équipes',t.equipe==='toutes'||!t.equipe)}${opt('cheftaines','Maîtrise (cheftaines)',t.equipe==='cheftaines')}${TEAMS.map(x=>opt(x.id,'Équipe '+x.nom,t.equipe===x.id)).join('')}</select></label>`:'';
+  const team=isChef?(TEAM[t.equipe]?t.equipe:null):scope;
+  const chips=team?`<div class="full"><div style="font-weight:600;font-size:.9rem;margin-bottom:6px">Guides chargées de la tâche</div><div class="chips">${members(team).map(m=>`<label><input type="checkbox" name="assignees" value="${esc(m)}" ${(t.assignees||[]).includes(m)?'checked':''}>${esc(m)}</label>`).join('')||'<span class="muted small">Aucune guide enregistrée dans cette équipe.</span>'}</div></div>`
+    :`<label class="f full">Personnes chargées <span class="h">Prénoms séparés par des virgules (facultatif)</span><input type="text" name="assigneesTxt" value="${esc((t.assignees||[]).join(', '))}"></label>`;
+  return `<div class="fgrid"><label class="f full">Tâche<input type="text" name="texte" required value="${esc(t.texte)}" placeholder="Ex. : apporter la gamelle d’équipe"></label>
+   ${dest}<label class="f">Week-end<select name="we">${weOptions(t.we)}</select></label>
+   <label class="f">À faire pour le<input type="date" name="echeance" value="${esc(t.echeance)}"></label>
+   ${chips}<label class="f full">Détails <span class="h">facultatif</span><textarea name="details">${esc(t.details)}</textarea></label></div>`}
+function readTask(fd,scope){const o={texte:(fd.get('texte')||'').trim(),we:fd.get('we')||'general',echeance:fd.get('echeance')||'',details:(fd.get('details')||'').trim()};
+  if(scope==='chef'){o.equipe=fd.get('equipe');}else{o.equipe=scope}
+  o.assignees=fd.getAll('assignees');if(fd.has('assigneesTxt'))o.assignees=String(fd.get('assigneesTxt')).split(',').map(s=>s.trim()).filter(Boolean);
+  return o}
+
+/* ---------- ÉQUIPE ---------- */
+function vTeam(id){const t=TEAM[id];
+  const st=subtabs('team_'+id,[['taches','Tâches'],['lieux','Lieux de camp'],['budget','Budget & repas'],['prog','Programme']]);
+  let body='';if(st.cur==='taches')body=tasksView(id);else if(st.cur==='lieux')body=teamLieux(id);else if(st.cur==='budget')body=budgetView(id);
+  else{const p=sortProg(S.prog);body=p.length?`<p class="muted small" style="margin-top:0">Renseignez pour votre équipe l’horaire d’arrivée, l’horaire de sortie et le lieu de rendez-vous : les parents les voient sur le site public.</p><div class="prog">${p.map(e=>evHtml(e,id)).join('')}</div>`:'<div class="empty">Le programme n’a pas encore été publié par les cheftaines.</div>'}
+  const m=members(id);
+  return `<div class="pagehead"><div><div class="eyebrow">Espace équipe</div><h1>Équipe ${esc(t.nom)}</h1>${m.length?`<div class="small muted" style="margin-top:4px">${m.map(esc).join(' · ')}</div>`:''}</div></div>${dbBanner()}${st.html}${body}`}
+
+function teamLieux(id){
+  const s=S.statuts[id]||{};const cur=S.filters['lst_'+id]||'non';const dep=S.filters['ldep_'+id]||'';
+  const deps=[...new Set(S.lieux.map(l=>l.dep))];
+  const cnt={non:0,contacte:0,accepte:0,refus:0};S.lieux.forEach(l=>cnt[(s[l.id]&&s[l.id].st)||'non']++);
+  const list=S.lieux.filter(l=>((s[l.id]&&s[l.id].st)||'non')===cur&&(!dep||l.dep===dep));
+  if(cur!=='non')list.sort((a,b)=>((s[b.id]||{}).maj||'').localeCompare((s[a.id]||{}).maj||''));
+  return `<div class="seg" role="group" aria-label="Catégories de lieux">${STATUTS.map(x=>`<button class="s-${x.id}" aria-pressed="${x.id===cur}" data-act="lst" data-team="${id}" data-v="${x.id}"><span class="c">${cnt[x.id]}</span><span class="small">${x.label}</span></button>`).join('')}</div>
+  <div class="toolbar"><input class="grow" type="search" id="srch-${id}" data-search=".lieu" placeholder="Rechercher un lieu, une ville, un contact…" aria-label="Rechercher un lieu">
+   <select id="ldep-${id}" data-filter="ldep_${id}" aria-label="Département">${opt('','Tous les départements',!dep)}${deps.map(d=>opt(d,d,d===dep)).join('')}</select></div>
+  ${S.lieux.length?(list.length?`<div class="lieux">${list.map(l=>lieuCard(l,s[l.id],id)).join('')}</div>`:`<div class="empty">Aucun lieu dans « ${STL[cur]} »${dep?' pour ce département':''}. Changez le statut d’un lieu depuis sa carte pour le déplacer ici.</div>`)
+   :`<div class="empty">${S.dbState==='loading'?'Chargement des lieux…':'La liste des lieux de camp n’est pas encore disponible.'}</div>`}`}
+function lieuCard(l,st,team){const v=(st&&st.st)||'non';
+  const kv=[['Ville',[l.ville,l.cp].filter(Boolean).join(' ')],['Adresse',l.adresse],['Trajet',l.temps+(l.transport?` (transports : ${l.transport})`:'')],['Contact',l.contact],['Fixe',l.fixe],['Portable',l.portable],['Mail / site',l.email],['Pour',l.type]].filter(x=>x[1]&&x[1].trim());
+  return `<article class="lieu st-${v}" data-s="${esc((l.nom+' '+l.ville+' '+l.contact+' '+l.infos+' '+l.cp+' '+l.adresse).toLowerCase())}">
+   <div class="small muted">${esc(l.dep)}</div><h3>${esc(l.nom)}</h3>
+   ${l.infos?`<div class="small" style="color:var(--blue)">${esc(l.infos)}</div>`:''}
+   <dl class="kv">${kv.map(([k,val])=>`<dt>${k}</dt><dd>${esc(val)}</dd>`).join('')}</dl>
+   ${st&&st.note?`<div class="note">${esc(st.note)}${st.maj?`<div class="small muted">Mis à jour le ${fmtD(st.maj.slice(0,10))}</div>`:''}</div>`:''}
+   <div class="foot"><select data-act="lieu-st" data-team="${team}" data-id="${l.id}" aria-label="Statut de ${esc(l.nom)}">${STATUTS.map(x=>opt(x.id,x.label,x.id===v)).join('')}</select>
+   <button class="btn ghost sm" data-act="lieu-note" data-team="${team}" data-id="${l.id}">Note</button></div></article>`}
+
+/* ---------- BUDGET & REPAS ---------- */
+function budgetView(scope){
+  const key='we_'+scope;const wes=weekends();let we=S.filters[key];if(!we)we=wes.find(e=>(e.fin||e.debut||'')>=today())?.id||'general';
+  const lines=S.budget.filter(b=>b.scope===scope&&(b.we||'general')===we);
+  const dep=lines.filter(l=>l.sens!=='recette').reduce((a,l)=>a+(+l.montant||0),0),rec=lines.filter(l=>l.sens==='recette').reduce((a,l)=>a+(+l.montant||0),0);
+  const meals=S.repas.filter(r=>r.scope===scope&&(r.we||'general')===we).sort((a,b)=>(a.jour||'').localeCompare(b.jour||'')||MOMENTS.indexOf(a.moment)-MOMENTS.indexOf(b.moment));
+  const all=[];meals.forEach(m=>(m.courses||[]).forEach((c,i)=>all.push({m,c,i})));
+  const coursesTot=all.reduce((a,x)=>a+(+x.c.prix||0),0);const reste=all.filter(x=>!x.c.pris).length;
+  return `<div class="toolbar"><label class="f" style="flex-direction:row;align-items:center;gap:8px">Week-end<select id="we-${scope}" data-filter="${key}" style="width:auto">${weOptions(we)}</select></label>
+   <span class="grow"></span>${wes.length?'':'<span class="small muted">Ajoutez un week-end dans le programme pour le retrouver ici.</span>'}</div>
+  <div class="grid2">
+   <div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px"><h3 style="margin:0">Budget</h3><button class="btn sm" data-act="bud-new" data-scope="${scope}" data-we="${we}">${X} Ligne</button></div>
+    <div class="totals"><div><span class="small muted">Dépenses</span><b>${eur(dep)}</b></div><div><span class="small muted">Recettes</span><b>${eur(rec)}</b></div><div><span class="small muted">Solde</span><b style="color:${rec-dep<0?'var(--st-refus)':'var(--st-accepte)'}">${eur(rec-dep)}</b></div></div>
+    ${lines.length?`<div class="tablewrap"><table><thead><tr><th>Poste</th><th>Catégorie</th><th class="num">Montant</th><th></th></tr></thead><tbody>${lines.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)).map(l=>`<tr><td>${esc(l.libelle)}</td><td class="small muted">${esc(l.cat)}</td><td class="num" style="color:${l.sens==='recette'?'var(--st-accepte)':'inherit'}">${l.sens==='recette'?'+':'−'} ${eur(l.montant)}</td><td><button class="icon-btn" data-act="bud-edit" data-id="${l.id}">Modifier</button></td></tr>`).join('')}</tbody></table></div>`
+     :`<div class="empty small">Pas encore de ligne de budget. Ajoutez les dépenses prévues (courses, transport…) et les recettes (participation, caisse d’équipe).</div>`}
+   </div>
+   <div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px"><h3 style="margin:0">Liste de courses</h3>
+     ${all.length?`<button class="btn ghost sm" data-act="courses-budget" data-scope="${scope}" data-we="${we}" data-tot="${coursesTot}">Ajouter ${eur(coursesTot)} au budget</button>`:''}</div>
+    ${all.length?`<p class="small muted" style="margin:0 0 8px">${all.length} articles · ${reste} restant${reste>1?'s':''} à acheter · estimation ${eur(coursesTot)}</p>
+     <ul class="courses">${all.map(x=>`<li class="${x.c.pris?'pris':''}"><input type="checkbox" data-act="c-toggle" data-id="${x.m.id}" data-i="${x.i}" ${x.c.pris?'checked':''} aria-label="Acheté : ${esc(x.c.article)}"><span class="a">${esc(x.c.article)} <span class="muted small">· ${esc(x.m.moment||'')}</span></span><span class="small muted">${esc(x.c.qte)}</span><span class="small" style="font-variant-numeric:tabular-nums">${x.c.prix?eur(x.c.prix):''}</span></li>`).join('')}</ul>`
+     :`<div class="empty small">La liste se remplit à partir des repas ci-dessous : ajoutez un repas, puis ses articles.</div>`}
+   </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin:26px 0 12px"><h2 style="font-size:1.5rem">Repas prévus</h2><button class="btn" data-act="meal-new" data-scope="${scope}" data-we="${we}">${X} Ajouter un repas</button></div>
+  ${meals.length?`<div class="meals">${meals.map(m=>`<div class="meal"><div class="hd"><div><div class="eyebrow">${esc(m.jour?fmtD(m.jour,{weekday:'long',day:'numeric',month:'short'}):'Jour à préciser')}</div><h3 style="font-size:1.2rem">${esc(m.moment)}</h3></div>
+     <div><button class="icon-btn" data-act="meal-edit" data-id="${m.id}">Modifier</button></div></div>
+     <div>${esc(m.menu)||'<span class="muted">Menu à définir</span>'}</div>${m.convives?`<div class="small muted">${esc(m.convives)} personnes</div>`:''}
+     <ul class="courses">${(m.courses||[]).map((c,i)=>`<li class="${c.pris?'pris':''}"><input type="checkbox" data-act="c-toggle" data-id="${m.id}" data-i="${i}" ${c.pris?'checked':''} aria-label="Acheté : ${esc(c.article)}"><span class="a">${esc(c.article)}</span><span class="small muted">${esc(c.qte)}</span><button class="icon-btn" data-act="c-del" data-id="${m.id}" data-i="${i}" aria-label="Retirer ${esc(c.article)}">×</button></li>`).join('')}</ul>
+     <button class="btn ghost sm" style="align-self:flex-start" data-act="c-add" data-id="${m.id}">${X} Article</button></div>`).join('')}</div>`
+   :`<div class="empty">Aucun repas prévu pour ce week-end. Ajoutez le premier repas (jour, moment, menu), puis les articles à acheter.</div>`}`}
+
+/* ---------- search & filters (no re-render) ---------- */
+function applySearch(){main.querySelectorAll('input[data-search]').forEach(inp=>{const q=(S.filters['q_'+inp.id]||'');inp.value=q;filterRows(inp)})}
+function filterRows(inp){const q=inp.value.trim().toLowerCase();S.filters['q_'+inp.id]=inp.value;main.querySelectorAll(inp.dataset.search).forEach(el=>{el.hidden=!!q&&!el.dataset.s.includes(q)})}
+main.addEventListener('input',e=>{if(e.target.matches('input[data-search]'))filterRows(e.target)});
+
+/* ---------- events ---------- */
+main.addEventListener('click',e=>{if(e.target.closest('#addslot')){$('#slots').insertAdjacentHTML('beforeend',slotRow());$('#slots .slot:last-child input').focus()}
+  const del=e.target.closest('[data-slot-del]');if(del&&$('#slots').children.length>1)del.parentElement.remove()});
+main.addEventListener('submit',async e=>{if(e.target.id!=='ficheform')return;e.preventDefault();if(!needDb())return;const o=readFiche(e.target);o.createdAt=Date.now();o.lue=false;
+  try{await S.db.collection('fiches').add(o);main.innerHTML=`<div class="lock"><svg aria-hidden="true"><use href="#croix"/></svg><h1 style="font-size:2rem">Fiche envoyée</h1><p class="muted">Merci ${esc(o.auteur)} ! Les cheftaines ont bien reçu la fiche de l’équipe ${esc(TEAM[o.equipe].nom)}.</p><button class="btn" data-act="fiche-again">Remplir une autre fiche</button></div>`}
+  catch(err){toast(errMsg(err),true)}});
+main.addEventListener('submit',e=>{if(e.target.id==='lockform'){e.preventDefault();const c=$('#chefcode').value.trim();
+  if(c&&c===(S.config.code||DEFAULT_CODE)){S.chefOK=true;try{sessionStorage.setItem('chefOK','1')}catch(_){};document.activeElement.blur();renderAll()}else toast('Code incorrect.',true)}});
+main.addEventListener('change',e=>{const el=e.target;
+  if(el.dataset.filter){S.filters[el.dataset.filter]=el.value;renderAll();return}
+  const a=el.dataset.act;if(!a)return;
+  if(a==='task-toggle'){if(!needDb()){el.checked=!el.checked;return}save(S.db.doc('taches/'+el.dataset.id).update({fait:el.checked}))}
+  if(a==='lieu-st'){if(!needDb())return;setStatut(el.dataset.team,el.dataset.id,{st:el.value},'Statut mis à jour : '+STL[el.value])}
+  if(a==='c-toggle'){if(!needDb())return;const m=S.repas.find(r=>r.id===el.dataset.id);if(!m)return;const c=(m.courses||[]).map(x=>({...x}));c[+el.dataset.i].pris=el.checked;save(S.db.doc('repas/'+m.id).update({courses:c}))}
+});
+async function setStatut(team,id,patch,msg){const cur=(S.statuts[team]||{})[id]||{};const val={st:cur.st||'non',note:cur.note||'',...patch,maj:new Date().toISOString()};
+  try{await S.db.doc('statuts/'+team).update({s:{[id]:val}});toast(msg)}catch(e){
+    if(e&&e.code==='invalid_argument'&&!S.statuts[team]){await save(S.db.doc('statuts/'+team).set({s:{[id]:val}}),msg)}else toast(errMsg(e),true)}}
+
+main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.tagName==='SELECT'||b.type==='checkbox')return;const a=b.dataset.act,d=b.dataset;
+  switch(a){
+  case 'sub':S.sub[d.key]=d.v;renderAll();break;
+  case 'fiche-again':main.innerHTML=vFiche();break;
+  case 'lst':S.filters['lst_'+d.team]=d.v;renderAll();break;
+  case 'chef-out':S.chefOK=false;try{sessionStorage.removeItem('chefOK')}catch(_){};renderAll();break;
+  case 'ev-new':case 'ev-edit':{const ev=a==='ev-edit'?S.prog.find(x=>x.id===d.id):{};
+    openModal(a==='ev-new'?'Nouveau rendez-vous':'Modifier le rendez-vous',`<div class="fgrid">
+     <label class="f full">Titre<input type="text" name="titre" required value="${esc(ev.titre)}" placeholder="Ex. : Week-end de compagnie"></label>
+     <label class="f">Type<select name="type">${TYPES.map(t=>opt(t,t,(ev.type||'Réunion')===t)).join('')}</select></label>
+     <label class="f">Lieu<input type="text" name="lieu" value="${esc(ev.lieu)}"></label>
+     <label class="f">Début<input type="date" name="debut" required value="${esc(ev.debut)}"></label>
+     <label class="f">Fin <span class="h">si plusieurs jours</span><input type="date" name="fin" value="${esc(ev.fin)}"></label>
+     <label class="f">Horaire d’arrivée<input type="time" name="heureArrivee" value="${esc(ev.heureArrivee)}"></label>
+     <label class="f">Horaire de sortie<input type="time" name="heureSortie" value="${esc(ev.heureSortie)}"></label>
+     <label class="f full">Lieu de rendez-vous<input type="text" name="rdv" value="${esc(ev.rdv)}" placeholder="Ex. : devant l’église de Ville-d’Avray"></label>
+     <label class="f full">Description<textarea name="description" placeholder="Affaires à prévoir, thème, informations pour les parents…">${esc(ev.description)}</textarea></label></div>`,
+     fd=>{if(!needDb())return false;const o={titre:fd.get('titre').trim(),type:fd.get('type'),lieu:fd.get('lieu').trim(),debut:fd.get('debut'),fin:fd.get('fin'),rdv:fd.get('rdv').trim(),heureArrivee:fd.get('heureArrivee')||'',heureSortie:fd.get('heureSortie')||'',description:fd.get('description').trim()};
+       if(a==='ev-new'){o.createdAt=Date.now();save(S.db.collection('programme').add(o),'Rendez-vous ajouté')}else save(S.db.doc('programme/'+d.id).update(o),'Rendez-vous modifié')});break}
+  case 'ev-team':{const ev=S.prog.find(x=>x.id===d.id);const cur=((ev&&ev.equipes)||{})[d.team]||{};
+    openModal(`${TEAM[d.team].nom} · ${ev?ev.titre:''}`,`<p class="small muted" style="margin:0">${range(ev&&ev.debut,ev&&ev.fin)}${ev&&horaires(ev)?' · Compagnie : '+horaires(ev):''}</p><div class="fgrid">
+     <label class="f">Horaire d’arrivée<input type="time" name="heureArrivee" value="${esc(cur.heureArrivee)}"></label>
+     <label class="f">Horaire de sortie<input type="time" name="heureSortie" value="${esc(cur.heureSortie)}"></label>
+     <label class="f full">Lieu de rendez-vous<input type="text" name="rdv" value="${esc(cur.rdv)}" placeholder="Ex. : gare de Sèvres-Ville-d’Avray"></label></div>`,
+     fd=>{if(!needDb())return false;save(S.db.doc('programme/'+d.id).update({equipes:{[d.team]:{heureArrivee:fd.get('heureArrivee')||'',heureSortie:fd.get('heureSortie')||'',rdv:fd.get('rdv').trim()}}}),'Horaires de l’équipe enregistrés')});break}
+  case 'fiche-team':S.filters.ficheTeam=d.v;renderAll();break;
+  case 'fiche-lue':if(!needDb())return;save(S.db.doc('fiches/'+d.id).update({lue:true}),'Fiche marquée comme lue');break;
+  case 'fiche-del':openModal('Supprimer cette fiche ?','<p>La fiche sera supprimée définitivement.</p>',()=>{if(!needDb())return false;save(S.db.doc('fiches/'+d.id).delete(),'Fiche supprimée')},'Supprimer');break;
+  case 'ev-del':{const ev=S.prog.find(x=>x.id===d.id);openModal('Supprimer ce rendez-vous ?',`<p>« ${esc(ev&&ev.titre)} » sera retiré du programme pour tout le monde.</p>`,()=>{if(!needDb())return false;save(S.db.doc('programme/'+d.id).delete(),'Rendez-vous supprimé')},'Supprimer');break}
+  case 'task-new':case 'task-edit':{const sc=d.scope;const t=a==='task-edit'?S.taches.find(x=>x.id===d.id):{we:S.filters['taskWe_'+sc]&&S.filters['taskWe_'+sc]!=='all'?S.filters['taskWe_'+sc]:'general'};
+    openModal(a==='task-new'?'Nouvelle tâche':'Modifier la tâche',taskForm(sc,t),fd=>{if(!needDb())return false;const o=readTask(fd,sc);
+      if(a==='task-new'){o.fait=false;o.auteur=sc;o.createdAt=Date.now();save(S.db.collection('taches').add(o),'Tâche ajoutée')}else save(S.db.doc('taches/'+d.id).update(o),'Tâche modifiée')});
+    if(sc==='chef'){const bind=()=>{const sel=document.querySelector('#modal-root select[name=equipe]');if(!sel)return;sel.addEventListener('change',()=>{const form=sel.form;const cur=readTask(new FormData(form),'chef');
+      form.querySelector('.fgrid').outerHTML=taskForm('chef',{...t,...cur,assignees:[]});bind()})};bind()}
+    break}
+  case 'task-del':{const t=S.taches.find(x=>x.id===d.id);openModal('Supprimer cette tâche ?',`<p>« ${esc(t&&t.texte)} »</p>`,()=>{if(!needDb())return false;save(S.db.doc('taches/'+d.id).delete(),'Tâche supprimée')},'Supprimer');break}
+  case 'lieu-note':{const st=(S.statuts[d.team]||{})[d.id]||{};const l=S.lieux.find(x=>x.id===d.id);
+    openModal('Note · '+(l?l.nom:''),`<label class="f">Statut<select name="st">${STATUTS.map(x=>opt(x.id,x.label,(st.st||'non')===x.id)).join('')}</select></label>
+     <label class="f">Note <span class="h">qui a appelé, réponse, dates proposées, prix…</span><textarea name="note">${esc(st.note)}</textarea></label>`,
+     fd=>{if(!needDb())return false;setStatut(d.team,d.id,{st:fd.get('st'),note:fd.get('note').trim()},'Note enregistrée')});break}
+  case 'lieu-new':case 'lieu-edit':{const l=a==='lieu-edit'?S.lieux.find(x=>x.id===d.id):{};const deps=[...new Set(S.lieux.map(x=>x.dep))];
+    const F=(n,lab,full)=>`<label class="f${full?' full':''}">${lab}<input type="text" name="${n}" value="${esc(l[n])}"></label>`;
+    openModal(a==='lieu-new'?'Ajouter un lieu de camp':'Modifier le lieu',`<div class="fgrid">${F('nom','Nom du lieu',true)}
+     <label class="f">Département<input type="text" name="dep" list="deps" value="${esc(l.dep)}"><datalist id="deps">${deps.map(x=>`<option value="${esc(x)}">`).join('')}</datalist></label>
+     ${F('ville','Ville')}${F('adresse','Adresse')}${F('cp','Code postal')}${F('contact','Nom du contact')}${F('email','Mail / site')}${F('fixe','Téléphone fixe')}${F('portable','Téléphone portable')}${F('temps','Temps depuis l’église de VDA')}${F('transport','Temps en transports')}${F('type','Pour (équipe, compa, groupe)')}${F('infos','Infos / prix',true)}</div>
+     ${a==='lieu-edit'?'<label class="chips" style="margin-top:4px"><label><input type="checkbox" name="suppr" value="1">Supprimer ce lieu de la liste</label></label>':''}`,
+     fd=>{if(!needDb())return false;const o={};['nom','dep','ville','adresse','cp','contact','email','fixe','portable','temps','transport','type','infos'].forEach(k=>o[k]=(fd.get(k)||'').trim());
+       if(!o.nom){toast('Donnez un nom au lieu.',true);return false}
+       let items=S.lieux.map(x=>({...x}));
+       if(a==='lieu-new'){o.id='l'+Date.now().toString(36);items.push(o)}else if(fd.get('suppr'))items=items.filter(x=>x.id!==d.id);else items=items.map(x=>x.id===d.id?{...x,...o}:x);
+       save(S.db.doc('ref/lieux').set({items}),a==='lieu-new'?'Lieu ajouté':'Lieu mis à jour')});break}
+  case 'mem-add':openModal('Ajouter une guide · '+TEAM[d.team].nom,`<label class="f">Prénom<input type="text" name="n" required></label>`,fd=>{if(!needDb())return false;
+    const m=[...members(d.team),fd.get('n').trim()];save(S.db.doc('equipes/'+d.team).set({nom:TEAM[d.team].nom,membres:m}),'Guide ajoutée')});break;
+  case 'mem-del':{const m=members(d.team).filter((_,i)=>i!==+d.i);if(!needDb())return;save(S.db.doc('equipes/'+d.team).set({nom:TEAM[d.team].nom,membres:m}),'Guide retirée');break}
+  case 'code-change':openModal('Nouveau code cheftaines',`<label class="f">Nouveau code<input type="text" name="c" required minlength="4" autocomplete="off"></label><p class="small muted" style="margin:0">Communiquez-le uniquement aux cheftaines.</p>`,
+    fd=>{if(!needDb())return false;save(S.db.doc('config/acces').set({code:fd.get('c').trim()}),'Code modifié')});break;
+  case 'bud-new':case 'bud-edit':{const l=a==='bud-edit'?S.budget.find(x=>x.id===d.id):{sens:'depense',cat:'Nourriture'};
+    openModal(a==='bud-new'?'Nouvelle ligne de budget':'Modifier la ligne',`<div class="fgrid"><label class="f full">Poste<input type="text" name="libelle" required value="${esc(l.libelle)}" placeholder="Ex. : billets de train"></label>
+     <label class="f">Type<select name="sens">${opt('depense','Dépense',l.sens!=='recette')}${opt('recette','Recette',l.sens==='recette')}</select></label>
+     <label class="f">Catégorie<select name="cat">${CATS.map(c=>opt(c,c,l.cat===c)).join('')}</select></label>
+     <label class="f">Montant (€)<input type="number" name="montant" step="0.01" min="0" required value="${esc(l.montant)}"></label></div>
+     ${a==='bud-edit'?'<div class="chips"><label><input type="checkbox" name="suppr" value="1">Supprimer cette ligne</label></div>':''}`,
+     fd=>{if(!needDb())return false;if(fd.get('suppr')){save(S.db.doc('budget/'+d.id).delete(),'Ligne supprimée');return}
+       const o={libelle:fd.get('libelle').trim(),sens:fd.get('sens'),cat:fd.get('cat'),montant:Math.round(parseFloat(fd.get('montant'))*100)/100||0};
+       if(a==='bud-new'){o.scope=d.scope;o.we=d.we;o.createdAt=Date.now();save(S.db.collection('budget').add(o),'Ligne ajoutée')}else save(S.db.doc('budget/'+d.id).update(o),'Ligne modifiée')});break}
+  case 'courses-budget':{if(!needDb())return;save(S.db.collection('budget').add({scope:d.scope,we:d.we,libelle:'Courses (liste de courses)',cat:'Nourriture',sens:'depense',montant:Math.round(+d.tot*100)/100,createdAt:Date.now()}),'Total des courses ajouté au budget');break}
+  case 'meal-new':case 'meal-edit':{const m=a==='meal-edit'?S.repas.find(x=>x.id===d.id):{moment:'Déjeuner'};const ev=S.prog.find(p=>p.id===(m.we||d.we));
+    openModal(a==='meal-new'?'Nouveau repas':'Modifier le repas',`<div class="fgrid"><label class="f">Jour<input type="date" name="jour" value="${esc(m.jour||(ev&&ev.debut)||'')}"></label>
+     <label class="f">Moment<select name="moment">${MOMENTS.map(x=>opt(x,x,m.moment===x)).join('')}</select></label>
+     <label class="f full">Menu<input type="text" name="menu" value="${esc(m.menu)}" placeholder="Ex. : pâtes bolognaise, compote"></label>
+     <label class="f">Nombre de personnes<input type="number" name="convives" min="0" value="${esc(m.convives)}"></label></div>
+     ${a==='meal-edit'?'<div class="chips"><label><input type="checkbox" name="suppr" value="1">Supprimer ce repas et ses articles</label></div>':''}`,
+     fd=>{if(!needDb())return false;if(fd.get('suppr')){save(S.db.doc('repas/'+d.id).delete(),'Repas supprimé');return}
+       const o={jour:fd.get('jour'),moment:fd.get('moment'),menu:fd.get('menu').trim(),convives:fd.get('convives')};
+       if(a==='meal-new'){o.scope=d.scope;o.we=d.we;o.courses=[];o.createdAt=Date.now();save(S.db.collection('repas').add(o),'Repas ajouté')}else save(S.db.doc('repas/'+d.id).update(o),'Repas modifié')});break}
+  case 'c-add':{const m=S.repas.find(x=>x.id===d.id);openModal('Ajouter un article · '+(m?m.moment:''),`<div class="fgrid"><label class="f full">Article<input type="text" name="article" required placeholder="Ex. : pâtes"></label>
+     <label class="f">Quantité<input type="text" name="qte" placeholder="Ex. : 2 kg"></label><label class="f">Prix estimé (€)<input type="number" name="prix" step="0.01" min="0"></label></div>`,
+     fd=>{if(!needDb()||!m)return false;const c=[...(m.courses||[]),{article:fd.get('article').trim(),qte:fd.get('qte').trim(),prix:parseFloat(fd.get('prix'))||0,pris:false}];save(S.db.doc('repas/'+m.id).update({courses:c}),'Article ajouté')},'Ajouter');break}
+  case 'c-del':{const m=S.repas.find(x=>x.id===d.id);if(!m||!needDb())return;const c=(m.courses||[]).filter((_,i)=>i!==+d.i);save(S.db.doc('repas/'+m.id).update({courses:c}));break}
+  }});
+
+/* ---------- data ---------- */
+renderAll(true);
+(async function init(){
+  let db=null;try{db=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){db=null}
+  if(!db){S.dbState='off';render();return}
+  S.db=db;let got=false;const slow=setTimeout(()=>{if(!got){S.dbState='slow';render()}},10000);
+  const done=snap=>{if(!snap.metadata.fromCache){got=true;clearTimeout(slow);if(S.dbState!=='ready'){S.dbState='ready'}}};
+  const onErr=e=>{console.error(e);got=true;clearTimeout(slow)};
+  const coll=(name,key)=>db.collection(name).onSnapshot(s=>{S[key]=s.docs.map(x=>({id:x.id,...x.data()}));done(s);render()},onErr);
+  coll('programme','prog');coll('taches','taches');coll('budget','budget');coll('repas','repas');coll('fiches','fiches');
+  db.collection('equipes').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=x.data());S.equipes=o;done(s);render()},onErr);
+  db.collection('statuts').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=(x.data().s)||{});S.statuts=o;done(s);render()},onErr);
+  db.doc('ref/lieux').onSnapshot(s=>{S.lieux=(s.exists&&s.data().items)||[];done(s);render()},onErr);
+  db.doc('config/acces').onSnapshot(s=>{S.config=(s.exists&&s.data())||{};done(s)},onErr);
+})();
+})();
+</script>
