@@ -196,6 +196,28 @@ tr:last-child td{border-bottom:0}
 #slots{display:flex;flex-direction:column;gap:6px}.slot{display:grid;grid-template-columns:140px 1fr auto;gap:6px}
 .fq{margin:12px 0 0;display:flex;flex-direction:column;gap:2px}.fq dt{font-weight:600;font-size:.88rem;color:var(--blue);margin-top:10px}.fq dd{margin:0;white-space:pre-wrap}
 @media (max-width:640px){.nextrdv{grid-template-columns:1fr}.slot{grid-template-columns:96px 1fr auto}.seg[style]{grid-template-columns:repeat(2,1fr)!important}}
+/* en-têtes de page avec photo, présences */
+.phead{display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:center;margin-bottom:22px}
+.phead h1{font-size:clamp(1.8rem,4vw,2.6rem);margin:6px 0 4px}
+.phead-img{margin:0;aspect-ratio:3/2;max-width:100%;border-radius:4px;overflow:hidden;position:relative;box-shadow:var(--shadow)}
+.phead-img img,.teamsec-img img,.lock-img img,.hero .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.phead-img::after,.teamsec-img::after{content:"";position:absolute;inset:8px;border:1px solid rgba(255,255,255,.65);pointer-events:none}
+.teamsec{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:36px;align-items:center}
+.teamsec-img{margin:0;aspect-ratio:4/5;max-width:100%;border-radius:4px;overflow:hidden;position:relative;box-shadow:var(--shadow)}
+.teamsec .teams5{grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
+.lock-img{margin:0;width:100%;aspect-ratio:16/9;border-radius:6px;overflow:hidden}
+.pres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.pres-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.pres-h h3{margin:0}
+.pres-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.pres-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.pres-list li:last-child{border-bottom:0}
+.yn{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
+.yn button{border:0;background:var(--surface);padding:5px 14px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--muted)}
+.yn button+button{border-left:1px solid var(--line)}
+.yn .yes[aria-pressed="true"]{background:var(--st-accepte);color:#fff}
+.yn .no[aria-pressed="true"]{background:var(--st-refus);color:#fff}
+@media (max-width:860px){.phead{grid-template-columns:1fr;gap:14px}.phead-img{aspect-ratio:16/9}.teamsec{grid-template-columns:1fr}.teamsec-img{aspect-ratio:16/9}}
 /* modal + toast */
 .ov{position:fixed;inset:0;background:rgba(8,14,36,.55);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
 .modal{background:var(--surface);color:var(--ink);border-radius:12px;width:100%;max-width:560px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:14px}
@@ -271,7 +293,7 @@ const MOMENTS=['Petit-déjeuner','Déjeuner','Goûter','Dîner'];
 const CATS=['Nourriture','Transport','Hébergement','Matériel','Activités','Autre'];
 const DEFAULT_CODE='cheftaines';
 
-const S={db:null,dbState:'loading',fiches:[],prog:[],taches:[],lieux:[],statuts:{},equipes:{},budget:[],repas:[],config:{},
+const S={db:null,dbState:'loading',pres:{},fiches:[],prog:[],taches:[],lieux:[],statuts:{},equipes:{},budget:[],repas:[],config:{},
   sub:{},chefOK:false,filters:{}};
 try{S.chefOK=sessionStorage.getItem('chefOK')==='1'}catch(e){}
 
@@ -287,6 +309,12 @@ const sortProg=a=>[...a].sort((x,y)=>(x.debut||x.periode||'9999').localeCompare(
 const weekends=()=>sortProg(S.prog.filter(e=>e.type==='Week-end'||e.type==='Camp'||e.type==='Sortie'));
 const weName=id=>{if(!id||id==='general')return 'Général';const e=S.prog.find(p=>p.id===id);return e?e.titre:'Événement supprimé'};
 const members=t=>(S.equipes[t]&&S.equipes[t].membres)||[];
+
+/* ---------- photos ---------- */
+const PH={p1:58,p2:40,p3:70,p4:50,p5:65,p6:72,p7:48,p8:30};
+const TEAM_IMG={serval:'p3',renard:'p2',faucon:'p6',pantheres:'p7',ocelot:'p8'};
+const imgTag=(k,alt,cls)=>`<img${cls?` class="${cls}"`:''} src="img/${k}.jpg" alt="${esc(alt)}" loading="lazy" style="object-position:50% ${PH[k]}%">`;
+function phead(eyebrow,title,sub,k,alt,right){return `<div class="phead"><div class="phead-t"><div class="eyebrow">${eyebrow}</div><h1>${title}</h1>${sub?`<div class="small muted">${sub}</div>`:''}${right?`<div style="margin-top:10px">${right}</div>`:''}</div><figure class="phead-img">${imgTag(k,alt)}</figure></div>`}
 
 /* ---------- toast & modal ---------- */
 let toastT;
@@ -312,10 +340,10 @@ const opt=(v,l,sel)=>`<option value="${esc(v)}"${sel?' selected':''}>${esc(l)}</
 const weOptions=sel=>opt('general','Général (hors week-end)',sel==='general'||!sel)+weekends().map(e=>opt(e.id,`${e.titre} · ${fmtD(e.debut)}`,sel===e.id)).join('');
 
 /* ---------- routing ---------- */
-const VIEWS=['accueil','programme','fiche','cheftaines',...TEAMS.map(t=>t.id)];
+const VIEWS=['accueil','programme','presences','fiche','cheftaines',...TEAMS.map(t=>t.id)];
 function view(){const h=location.hash.replace('#','');return VIEWS.includes(h)?h:'accueil'}
 function renderTabs(){const v=view();const L=(id,l)=>`<a href="#${id}"${v===id?' aria-current="page"':''}>${l}</a>`;
-  $('#tabs').innerHTML=L('accueil','Accueil')+L('programme','Programme')+L('fiche','Fiche de préparation')+'<span class="sep" aria-hidden="true"></span>'+L('cheftaines','Espace cheftaines')+'<span class="sep" aria-hidden="true"></span>'+
+  $('#tabs').innerHTML=L('accueil','Accueil')+L('programme','Programme')+L('presences','Présences')+L('fiche','Fiche de préparation')+'<span class="sep" aria-hidden="true"></span>'+L('cheftaines','Espace cheftaines')+'<span class="sep" aria-hidden="true"></span>'+
   TEAMS.map(t=>L(t.id,esc(t.nom))).join('')}
 window.addEventListener('hashchange',()=>{renderAll(true);window.scrollTo(0,0)});
 
@@ -327,7 +355,7 @@ function flushRender(){if(pending){pending=false;render()}}
 main.addEventListener('focusout',()=>setTimeout(flushRender,0));
 
 function renderAll(force){renderTabs();const v=view();let html;
-  if(v==='accueil')html=vAccueil();else if(v==='programme')html=vProgramme();else if(v==='fiche')html=vFiche();else if(v==='cheftaines')html=vChef();else html=vTeam(v);
+  if(v==='accueil')html=vAccueil();else if(v==='programme')html=vProgramme();else if(v==='presences')html=vPresences();else if(v==='fiche')html=vFiche();else if(v==='cheftaines')html=vChef();else html=vTeam(v);
   const y=window.scrollY;main.innerHTML=html;if(!force)window.scrollTo(0,y);applySearch()}
 
 /* ---------- ACCUEIL ---------- */
@@ -360,7 +388,7 @@ function vAccueil(){
       <p class="lead">La compagnie réunit les guides de Ville-d’Avray et Sèvres autour de la vie d’équipe, des week-ends en forêt, des camps et de la prière. Parents, retrouvez ici le lieu et les horaires du prochain rendez-vous.</p>
       <div class="cta"><a class="btn" href="#programme">Programme de l’année</a><a class="btn ghost" href="#fiche">Fiche de préparation</a></div>
     </div>
-    <div class="ph"><img src="img/p4.jpg" alt="Messe en forêt avec la compagnie en uniforme"></div>
+    <div class="ph">${imgTag('p4','Messe en forêt avec la compagnie en uniforme')}</div>
   </section>
 
   <section class="block">
@@ -368,23 +396,12 @@ function vAccueil(){
     <p class="small" style="margin-top:10px"><a href="#programme" style="color:var(--blue)">Voir tout le programme 2026-2027 →</a></p>
   </section>
 
-  <section class="block">
-    <div class="eyebrow">La compagnie</div><h2>Nos cinq équipes</h2>
-    <p class="muted small" style="margin:0">Chaque guide vit l’aventure au sein de son équipe, avec sa cheftaine d’équipe et sa seconde.</p>
+  <section class="block teamsec">
+    <figure class="teamsec-img">${imgTag('p3','Procession aux flambeaux de la compagnie au crépuscule')}</figure>
+    <div><div class="eyebrow">La compagnie</div><h2>Nos cinq équipes</h2>
+    <p class="muted" style="margin:6px 0 16px">Chaque guide vit l’aventure au sein de son équipe, avec sa cheftaine d’équipe et sa seconde.</p>
     <div class="teams5">${TEAMS.map(t=>`<a class="teamcard" href="#${t.id}"><svg aria-hidden="true"><use href="#croix-o"/></svg><span class="t">${esc(t.nom)}</span><span class="small muted">Espace équipe →</span></a>`).join('')}</div>
-  </section>
-
-  <section class="block">
-    <div class="eyebrow">En images</div><h2>La vie de compagnie</h2>
-    <div class="mosaic">
-      <img class="tall" src="img/p3.jpg" alt="Procession aux flambeaux au crépuscule" loading="lazy">
-      <img class="wide" src="img/p1.jpg" alt="Cérémonie de la compagnie au coucher du soleil" loading="lazy" style="object-position:center 30%">
-      <img class="tall" src="img/p6.jpg" alt="Une équipe en forêt" loading="lazy">
-      <img src="img/p5.jpg" alt="Flambeaux dans la nuit" loading="lazy">
-      <img src="img/p8.jpg" alt="Deux guides souriantes" loading="lazy">
-      <img class="wide" src="img/p7.jpg" alt="Pizzas faites au camp" loading="lazy" style="object-position:center 60%">
-      <img class="wide" src="img/p2.jpg" alt="Pause avec un chien pendant la marche" loading="lazy" style="object-position:center 40%">
-    </div>
+    <div class="cta"><a class="btn ghost" href="#presences">Indiquer sa présence</a></div></div>
   </section>`;
 }
 
@@ -406,13 +423,33 @@ function evHtml(e,mode){
   </article>`;
 }
 
+/* ---------- PRÉSENCES ---------- */
+function vPresences(){
+  const evs=sortProg(S.prog).filter(e=>e.debut);const nx=nextEvent();
+  let cur=S.filters.presEv;if(!cur||!evs.find(e=>e.id===cur))cur=(nx&&nx.debut?nx.id:(evs[0]&&evs[0].id))||'';
+  const ev=evs.find(e=>e.id===cur);const r=(S.pres[cur])||{};
+  const head=phead('Présences','Qui sera là ?','Chaque guide indique si elle sera présente au rendez-vous.','p8','Deux guides souriantes au camp');
+  if(S.dbState==='static'||S.dbState==='off')return head+`<div class="empty">Les présences se remplissent sur la version claude.ai du site : demandez le lien à vos cheftaines.</div>`;
+  if(!evs.length)return head+`<div class="empty">${S.dbState==='loading'?'Chargement…':'Aucun rendez-vous daté dans le programme.'}</div>`;
+  let oui=0,non=0,tot=0;TEAMS.forEach(t=>members(t.id).forEach(m=>{tot++;const v=(r[t.id]||{})[m];if(v==='oui')oui++;else if(v==='non')non++}));
+  return head+`<div class="toolbar"><label class="f" style="flex-direction:row;align-items:center;gap:8px;flex:1;min-width:240px;white-space:nowrap">Rendez-vous<select id="pres-ev" data-filter="presEv">${evs.map(e=>opt(e.id,`${e.titre} · ${fmtD(e.debut)}`,e.id===cur)).join('')}</select></label></div>
+  <div class="totals pres-tot"><div><span class="small muted">Présentes</span><b style="color:var(--st-accepte)">${oui}</b></div><div><span class="small muted">Absentes</span><b style="color:var(--st-refus)">${non}</b></div><div><span class="small muted">Sans réponse</span><b>${tot-oui-non}</b></div></div>
+  ${ev?`<p class="small muted" style="margin:0 0 14px">${range(ev.debut,ev.fin)}${ev.description?' · '+esc(ev.description):''}</p>`:''}
+  <div class="pres-grid">${TEAMS.map(t=>{const ms=members(t.id);const rt=r[t.id]||{};const o=ms.filter(m=>rt[m]==='oui').length;
+    return `<section class="card pres-team"><div class="pres-h"><h3>${esc(t.nom)}</h3><span class="small muted">${o}/${ms.length} présentes</span></div>
+    ${ms.length?`<ul class="pres-list">${ms.map(m=>{const v=rt[m]||'';return `<li><span>${esc(m)}</span><span class="yn" role="group" aria-label="Présence de ${esc(m)}">
+      <button class="yes" aria-pressed="${v==='oui'}" data-act="pres" data-ev="${cur}" data-team="${t.id}" data-name="${esc(m)}" data-v="oui">Oui</button><button class="no" aria-pressed="${v==='non'}" data-act="pres" data-ev="${cur}" data-team="${t.id}" data-name="${esc(m)}" data-v="non">Non</button></span></li>`}).join('')}</ul>`:'<p class="small muted">Aucune guide enregistrée.</p>'}</section>`}).join('')}</div>`}
+async function setPres(ev,team,name,v){const cur=((S.pres[ev]||{})[team]||{})[name];const val=cur===v?'':v;
+  try{await S.db.doc('presences/'+ev).update({r:{[team]:{[name]:val}}})}catch(e){
+    if(e&&e.code==='invalid_argument'&&!S.pres[ev]){await save(S.db.doc('presences/'+ev).set({r:{[team]:{[name]:val}}}))}else toast(errMsg(e),true)}}
+
 /* ---------- PROGRAMME PUBLIC ---------- */
 function vProgramme(){const p=sortProg(S.prog);
   let body;
   if(S.dbState==='off')body=`<div class="empty">Le programme s’affiche pour les familles et les guides connectées au site.</div>`;
   else if(S.dbState==='loading')body=`<div class="empty">Chargement du programme…</div>`;
   else body=p.length?`<div class="prog">${p.map(e=>evHtml(e,false)).join('')}</div>`:`<div class="empty">Le programme n’est pas encore publié.</div>`;
-  return `<div class="pagehead"><div><div class="eyebrow">Année 2026-2027</div><h1>Programme de la compagnie</h1></div></div>
+  return `${phead('Année 2026-2027','Programme de la compagnie','Week-ends, sorties et camps de l’année.','p5','Deux guides portant des flambeaux dans la forêt, la nuit')}
   <div style="margin-bottom:22px">${nextCard()}</div>
   <h2 style="font-size:1.5rem;margin-bottom:12px">Toute l’année</h2>${body}`}
 
@@ -425,7 +462,7 @@ const FICHE_Q=[
   ['ressenti','As-tu été angoissée vis-à-vis de la sortie ou es-tu sereine ?','']];
 const slotRow=()=>`<div class="slot"><input type="text" name="slot_h" placeholder="9h30-10h30" aria-label="Horaire"><input type="text" name="slot_a" placeholder="Activité" aria-label="Activité"><button type="button" class="icon-btn" data-slot-del aria-label="Retirer cette ligne">×</button></div>`;
 function vFiche(){
-  return `<div class="pagehead"><div><div class="eyebrow">Pour les cheftaines d’équipe et les secondes</div><h1>Fiche de préparation de la sortie</h1></div></div>
+  return `${phead('Pour les cheftaines d’équipe et les secondes','Fiche de préparation de la sortie','À remplir avant chaque sortie d’équipe.','p7','Guides montrant les pizzas préparées au camp')}
   ${S.dbState==='static'?'<div class="banner">L’envoi des fiches se fait depuis la version claude.ai du site : demande le lien à tes cheftaines.</div>':''}<div class="banner">Remplis cette fiche avant chaque sortie d’équipe. Elle est envoyée directement aux cheftaines et n’apparaît pas sur le site public.</div>
   <form id="ficheform" class="card fiche" autocomplete="off">
    <div class="fgrid">
@@ -462,14 +499,14 @@ function dbBanner(){if(S.dbState==='static')return `<div class="banner">Version 
   if(S.dbState==='slow')return `<div class="banner">Les données mettent du temps à arriver. Ce qui s’affiche peut ne pas être à jour.</div>`;return ''}
 
 function vChef(){
-  if(!S.chefOK)return `<div class="lock"><svg aria-hidden="true"><use href="#croix"/></svg><h1 style="font-size:2rem">Espace cheftaines</h1>
+  if(!S.chefOK)return `<div class="lock"><figure class="lock-img">${imgTag('p1','Cheftaines de la compagnie au coucher du soleil')}</figure><h1 style="font-size:2rem">Espace cheftaines</h1>
     <p class="muted">Entrez le code de l’espace cheftaines pour gérer le programme, les tâches, les lieux de camp et les budgets.</p>
     <form id="lockform"><input type="password" id="chefcode" name="code" placeholder="Code cheftaines" aria-label="Code cheftaines" autocomplete="off"><button class="btn" type="submit">Entrer</button></form></div>`;
   const st=subtabs('chef',[['prog','Programme'],['taches','Tâches'],['lieux','Lieux de camp'],['budget','Budget & repas'],['fiches','Fiches de préparation'],['equipes','Équipes'],['reglages','Réglages']]);
   let body='';
   if(st.cur==='prog')body=chefProg();else if(st.cur==='taches')body=tasksView('chef');else if(st.cur==='lieux')body=chefLieux();
   else if(st.cur==='budget')body=budgetView('chefs');else if(st.cur==='fiches')body=chefFiches();else if(st.cur==='equipes')body=chefEquipes();else body=chefReglages();
-  return `<div class="pagehead"><div><div class="eyebrow">Espace réservé</div><h1>Espace cheftaines</h1></div><button class="btn ghost sm" data-act="chef-out">Quitter l’espace</button></div>${dbBanner()}${st.html}${body}`;
+  return `${phead('Espace réservé','Espace cheftaines','','p1','Cheftaines de la compagnie au coucher du soleil','<button class="btn ghost sm" data-act="chef-out">Quitter l’espace</button>')}${dbBanner()}${st.html}${body}`;
 }
 function chefProg(){const p=sortProg(S.prog);
   return `<div class="toolbar"><p class="muted small grow" style="margin:0">Ce que vous ajoutez ici s’affiche sur l’accueil et dans les espaces des équipes.</p><button class="btn" data-act="ev-new">${X} Ajouter un rendez-vous</button></div>
@@ -551,7 +588,7 @@ function vTeam(id){const t=TEAM[id];
   let body='';if(st.cur==='taches')body=tasksView(id);else if(st.cur==='lieux')body=teamLieux(id);else if(st.cur==='budget')body=budgetView(id);
   else{const p=sortProg(S.prog);body=p.length?`<p class="muted small" style="margin-top:0">Renseignez pour votre équipe l’horaire d’arrivée, l’horaire de sortie et le lieu de rendez-vous : les parents les voient sur le site public.</p><div class="prog">${p.map(e=>evHtml(e,id)).join('')}</div>`:'<div class="empty">Le programme n’a pas encore été publié par les cheftaines.</div>'}
   const m=members(id);
-  return `<div class="pagehead"><div><div class="eyebrow">Espace équipe</div><h1>Équipe ${esc(t.nom)}</h1>${m.length?`<div class="small muted" style="margin-top:4px">${m.map(esc).join(' · ')}</div>`:''}</div></div>${dbBanner()}${st.html}${body}`}
+  return `${phead('Espace équipe','Équipe '+esc(t.nom),m.map(esc).join(' · '),TEAM_IMG[id],'Guides de la compagnie')}${dbBanner()}${st.html}${body}`}
 
 function teamLieux(id){
   const s=S.statuts[id]||{};const cur=S.filters['lst_'+id]||'non';const dep=S.filters['ldep_'+id]||'';
@@ -654,6 +691,7 @@ main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||
      <label class="f">Horaire de sortie<input type="time" name="heureSortie" value="${esc(cur.heureSortie)}"></label>
      <label class="f full">Lieu de rendez-vous<input type="text" name="rdv" value="${esc(cur.rdv)}" placeholder="Ex. : gare de Sèvres-Ville-d’Avray"></label></div>`,
      fd=>{if(!needDb())return false;save(S.db.doc('programme/'+d.id).update({equipes:{[d.team]:{heureArrivee:fd.get('heureArrivee')||'',heureSortie:fd.get('heureSortie')||'',rdv:fd.get('rdv').trim()}}}),'Horaires de l’équipe enregistrés')});break}
+  case 'pres':if(!needDb())return;setPres(d.ev,d.team,d.name,d.v);break;
   case 'fiche-team':S.filters.ficheTeam=d.v;renderAll();break;
   case 'fiche-lue':if(!needDb())return;save(S.db.doc('fiches/'+d.id).update({lue:true}),'Fiche marquée comme lue');break;
   case 'fiche-del':openModal('Supprimer cette fiche ?','<p>La fiche sera supprimée définitivement.</p>',()=>{if(!needDb())return false;save(S.db.doc('fiches/'+d.id).delete(),'Fiche supprimée')},'Supprimer');break;
@@ -720,6 +758,7 @@ renderAll(true);
   const onErr=e=>{console.error(e);got=true;clearTimeout(slow)};
   const coll=(name,key)=>db.collection(name).onSnapshot(s=>{S[key]=s.docs.map(x=>({id:x.id,...x.data()}));done(s);render()},onErr);
   coll('programme','prog');coll('taches','taches');coll('budget','budget');coll('repas','repas');coll('fiches','fiches');
+  db.collection('presences').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=(x.data().r)||{});S.pres=o;done(s);render()},onErr);
   db.collection('equipes').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=x.data());S.equipes=o;done(s);render()},onErr);
   db.collection('statuts').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=(x.data().s)||{});S.statuts=o;done(s);render()},onErr);
   db.doc('ref/lieux').onSnapshot(s=>{S.lieux=(s.exists&&s.data().items)||[];done(s);render()},onErr);

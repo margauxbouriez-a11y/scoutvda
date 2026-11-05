@@ -12,6 +12,7 @@ Site de la compagnie guides du groupe Ville-d'Avray – Sèvres (Bienheureux Fr�
 ## Onglets
 
 - **Accueil** et **Programme** (publics) : programme 2026-2027 et prochain rendez-vous (lieu, horaires) pour les parents.
+- **Présences** : chaque guide indique oui ou non pour chaque rendez-vous, équipe par équipe.
 - **Fiche de préparation** : formulaire vide que les équipes remplissent avant chaque sortie ; les réponses n'arrivent que dans l'espace cheftaines.
 - **Espace cheftaines** (code d'accès) : programme, tâches, lieux de camp, budget & repas, fiches reçues par équipe, composition des équipes.
 - **Serval, Renard, Faucon, Panthères, Ocelot** : tâches de l'équipe, suivi des lieux (non contacté / contacté / accepté / refus), budget & repas, horaires et lieu de rendez-vous de l'équipe.
