@@ -1,3 +1,11 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
 <title>Compagnie Guides VDA</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -287,7 +295,7 @@ function toast(msg,err){let t=$('.toast');if(!t){t=document.createElement('div')
 function errMsg(e){const c=e&&e.code;if(c==='invalid_argument')return "Enregistrement refusé : vous n'avez peut-être pas les droits d'écriture sur ce site.";
   if(c==='quota_exceeded')return 'La base est pleine : supprimez d’anciens éléments.';return "Impossible d'enregistrer pour l'instant. Réessayez dans un moment."}
 async function save(p,ok){try{await p;if(ok)toast(ok)}catch(e){console.error(e);toast(errMsg(e),true)}}
-function needDb(){if(!S.db){toast('Connectez-vous à claude.ai pour enregistrer des modifications.',true);return false}return true}
+function needDb(){if(!S.db){toast(S.dbState==='static'?'Cette version du site est en lecture seule : les modifications se font sur la version claude.ai.':'Connectez-vous à claude.ai pour enregistrer des modifications.',true);return false}return true}
 
 function openModal(title,body,onSubmit,submitLabel){
   const root=$('#modal-root');
@@ -418,7 +426,7 @@ const FICHE_Q=[
 const slotRow=()=>`<div class="slot"><input type="text" name="slot_h" placeholder="9h30-10h30" aria-label="Horaire"><input type="text" name="slot_a" placeholder="Activité" aria-label="Activité"><button type="button" class="icon-btn" data-slot-del aria-label="Retirer cette ligne">×</button></div>`;
 function vFiche(){
   return `<div class="pagehead"><div><div class="eyebrow">Pour les cheftaines d’équipe et les secondes</div><h1>Fiche de préparation de la sortie</h1></div></div>
-  <div class="banner">Remplis cette fiche avant chaque sortie d’équipe. Elle est envoyée directement aux cheftaines et n’apparaît pas sur le site public.</div>
+  ${S.dbState==='static'?'<div class="banner">L’envoi des fiches se fait depuis la version claude.ai du site : demande le lien à tes cheftaines.</div>':''}<div class="banner">Remplis cette fiche avant chaque sortie d’équipe. Elle est envoyée directement aux cheftaines et n’apparaît pas sur le site public.</div>
   <form id="ficheform" class="card fiche" autocomplete="off">
    <div class="fgrid">
     <label class="f">Équipe<select name="equipe" required>${opt('','Choisir l’équipe',true)}${TEAMS.map(t=>opt(t.id,t.nom)).join('')}</select></label>
@@ -450,7 +458,7 @@ function chefFiches(){const cur=S.filters.ficheTeam||TEAMS[0].id;
 /* ---------- CHEFTAINES ---------- */
 function subtabs(key,list){const cur=S.sub[key]||list[0][0];
   return {cur,html:`<div class="subtabs" role="tablist">${list.map(([k,l])=>`<button role="tab" aria-selected="${k===cur}" data-act="sub" data-key="${key}" data-v="${k}">${l}</button>`).join('')}</div>`}}
-function dbBanner(){if(S.dbState==='off')return `<div class="banner">Ouvrez ce site connecté·e à claude.ai pour voir et modifier les données partagées (programme, tâches, lieux, budgets).</div>`;
+function dbBanner(){if(S.dbState==='static')return `<div class="banner">Version publique en lecture seule. Les tâches, les lieux, les budgets et les fiches se gèrent sur la version claude.ai du site.</div>`;if(S.dbState==='off')return `<div class="banner">Ouvrez ce site connecté·e à claude.ai pour voir et modifier les données partagées (programme, tâches, lieux, budgets).</div>`;
   if(S.dbState==='slow')return `<div class="banner">Les données mettent du temps à arriver. Ce qui s’affiche peut ne pas être à jour.</div>`;return ''}
 
 function vChef(){
@@ -706,7 +714,7 @@ main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||
 renderAll(true);
 (async function init(){
   let db=null;try{db=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){db=null}
-  if(!db){S.dbState='off';render();return}
+  if(!db){try{const r=await fetch('data/programme.json',{cache:'no-store'});if(!r.ok)throw 0;S.prog=(await r.json()).items||[];S.dbState='static'}catch(e){S.dbState='off'}renderAll(true);return}
   S.db=db;let got=false;const slow=setTimeout(()=>{if(!got){S.dbState='slow';render()}},10000);
   const done=snap=>{if(!snap.metadata.fromCache){got=true;clearTimeout(slow);if(S.dbState!=='ready'){S.dbState='ready'}}};
   const onErr=e=>{console.error(e);got=true;clearTimeout(slow)};
@@ -719,3 +727,6 @@ renderAll(true);
 })();
 })();
 </script>
+
+</body>
+</html>

@@ -4,9 +4,10 @@ Site de la compagnie guides du groupe Ville-d'Avray – Sèvres (Bienheureux Fr�
 
 ## Contenu
 
-- `site/index.html` : le site (une seule page HTML, sans dépendance à installer).
-- `site/img/` : les photos de la page d'accueil.
-- `data/lieux.json` : la liste des lieux de camp (liste CE – WE & camp de Pâques), qui alimente l'onglet « Lieux de camp ».
+- `index.html` : le site (une seule page HTML, sans dépendance à installer), servi par GitHub Pages.
+- `img/` : les photos de la page d'accueil.
+- `data/programme.json` : le programme 2026-2027 affiché par la version GitHub Pages.
+- `data/lieux.json` : la liste des lieux de camp (liste CE – WE & camp de Pâques).
 
 ## Onglets
 
@@ -17,4 +18,4 @@ Site de la compagnie guides du groupe Ville-d'Avray – Sèvres (Bienheureux Fr�
 
 ## Où vivent les données
 
-Le site publié tourne comme artifact Claude (claude.ai). Les données partagées (programme, tâches, statuts des lieux, budgets, repas, fiches) sont stockées dans la base de l'artifact, pas dans ce dépôt. Ouvert en dehors de claude.ai (par exemple via GitHub Pages), la page s'affiche mais sans données ni enregistrement.
+Le site publié tourne comme artifact Claude (claude.ai). Les données partagées (programme, tâches, statuts des lieux, budgets, repas, fiches) sont stockées dans la base de l'artifact, pas dans ce dépôt. Sur GitHub Pages, le site est en lecture seule : l'accueil et le programme s'affichent à partir de `data/programme.json`, mais rien ne peut être enregistré (fiches, tâches, lieux, budgets). Quand le programme change sur claude.ai, il faut mettre à jour `data/programme.json`.
