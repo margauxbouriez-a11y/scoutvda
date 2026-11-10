@@ -19,4 +19,13 @@ Site de la compagnie guides du groupe Ville-d'Avray – Sèvres (Bienheureux Fr�
 
 ## Où vivent les données
 
-Le site publié tourne comme artifact Claude (claude.ai). Les données partagées (programme, tâches, statuts des lieux, budgets, repas, fiches) sont stockées dans la base de l'artifact, pas dans ce dépôt. Sur GitHub Pages, le site est en lecture seule : l'accueil et le programme s'affichent à partir de `data/programme.json`, mais rien ne peut être enregistré (fiches, tâches, lieux, budgets). Quand le programme change sur claude.ai, il faut mettre à jour `data/programme.json`.
+Le site publié sur GitHub Pages lit et enregistre ses données (programme, présences, fiches, tâches, statuts des lieux, budgets, repas) dans n8n :
+
+- data table **compagnie_vda_site** (colonnes `col`, `docid`, `data` en JSON) ;
+- workflow **Site compagnie VDA – données**, avec deux webhooks :
+  - `GET  https://margauxbouriez2.app.n8n.cloud/webhook/compagnie-vda/data` renvoie tous les documents ;
+  - `POST https://margauxbouriez2.app.n8n.cloud/webhook/compagnie-vda/write` avec `{op: "set" | "update" | "delete", c, id, d}`.
+
+Le site recharge les données à l'ouverture, au retour sur l'onglet et toutes les 45 secondes. Chaque lecture ou écriture compte comme une exécution n8n.
+
+`data/programme.json` sert de secours : si n8n ne répond pas, la page affiche le programme en lecture seule.

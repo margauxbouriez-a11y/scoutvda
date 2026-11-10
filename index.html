@@ -320,10 +320,10 @@ function phead(eyebrow,title,sub,k,alt,right){return `<div class="phead"><div cl
 let toastT;
 function toast(msg,err){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';t.setAttribute('role','status');document.body.appendChild(t)}
   t.textContent=msg;t.classList.toggle('err',!!err);t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},2600)}
-function errMsg(e){const c=e&&e.code;if(c==='invalid_argument')return "Enregistrement refusé : vous n'avez peut-être pas les droits d'écriture sur ce site.";
+function errMsg(e){const c=e&&e.code;if(c==='write_failed')return "Impossible d'enregistrer pour l'instant : vérifiez votre connexion internet et réessayez.";if(c==='invalid_argument')return "Enregistrement refusé : vous n'avez peut-être pas les droits d'écriture sur ce site.";
   if(c==='quota_exceeded')return 'La base est pleine : supprimez d’anciens éléments.';return "Impossible d'enregistrer pour l'instant. Réessayez dans un moment."}
 async function save(p,ok){try{await p;if(ok)toast(ok)}catch(e){console.error(e);toast(errMsg(e),true)}}
-function needDb(){if(!S.db){toast(S.dbState==='static'?'Cette version du site est en lecture seule : les modifications se font sur la version claude.ai.':'Connectez-vous à claude.ai pour enregistrer des modifications.',true);return false}return true}
+function needDb(){if(!S.db){toast('Le site n’arrive pas à joindre la base de données : rechargez la page dans un instant.',true);return false}return true}
 
 function openModal(title,body,onSubmit,submitLabel){
   const root=$('#modal-root');
@@ -429,7 +429,7 @@ function vPresences(){
   let cur=S.filters.presEv;if(!cur||!evs.find(e=>e.id===cur))cur=(nx&&nx.debut?nx.id:(evs[0]&&evs[0].id))||'';
   const ev=evs.find(e=>e.id===cur);const r=(S.pres[cur])||{};
   const head=phead('Présences','Qui sera là ?','Chaque guide indique si elle sera présente au rendez-vous.','p8','Deux guides souriantes au camp');
-  if(S.dbState==='static'||S.dbState==='off')return head+`<div class="empty">Les présences se remplissent sur la version claude.ai du site : demandez le lien à vos cheftaines.</div>`;
+  if(S.dbState==='static'||S.dbState==='off')return head+`<div class="empty">${S.dbState==='static'?'Le site n’arrive pas à joindre la base de données. Rechargez la page dans un instant.':'Chargement…'}</div>`;
   if(!evs.length)return head+`<div class="empty">${S.dbState==='loading'?'Chargement…':'Aucun rendez-vous daté dans le programme.'}</div>`;
   let oui=0,non=0,tot=0;TEAMS.forEach(t=>members(t.id).forEach(m=>{tot++;const v=(r[t.id]||{})[m];if(v==='oui')oui++;else if(v==='non')non++}));
   return head+`<div class="toolbar"><label class="f" style="flex-direction:row;align-items:center;gap:8px;flex:1;min-width:240px;white-space:nowrap">Rendez-vous<select id="pres-ev" data-filter="presEv">${evs.map(e=>opt(e.id,`${e.titre} · ${fmtD(e.debut)}`,e.id===cur)).join('')}</select></label></div>
@@ -439,9 +439,10 @@ function vPresences(){
     return `<section class="card pres-team"><div class="pres-h"><h3>${esc(t.nom)}</h3><span class="small muted">${o}/${ms.length} présentes</span></div>
     ${ms.length?`<ul class="pres-list">${ms.map(m=>{const v=rt[m]||'';return `<li><span>${esc(m)}</span><span class="yn" role="group" aria-label="Présence de ${esc(m)}">
       <button class="yes" aria-pressed="${v==='oui'}" data-act="pres" data-ev="${cur}" data-team="${t.id}" data-name="${esc(m)}" data-v="oui">Oui</button><button class="no" aria-pressed="${v==='non'}" data-act="pres" data-ev="${cur}" data-team="${t.id}" data-name="${esc(m)}" data-v="non">Non</button></span></li>`}).join('')}</ul>`:'<p class="small muted">Aucune guide enregistrée.</p>'}</section>`}).join('')}</div>`}
+const slug=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'')||'x';
 async function setPres(ev,team,name,v){const cur=((S.pres[ev]||{})[team]||{})[name];const val=cur===v?'':v;
-  try{await S.db.doc('presences/'+ev).update({r:{[team]:{[name]:val}}})}catch(e){
-    if(e&&e.code==='invalid_argument'&&!S.pres[ev]){await save(S.db.doc('presences/'+ev).set({r:{[team]:{[name]:val}}}))}else toast(errMsg(e),true)}}
+  const ref=S.db.doc('presences/'+ev+'_'+team+'_'+slug(name));
+  await save(val?ref.set({ev,team,name,v:val,maj:new Date().toISOString()}):ref.delete())}
 
 /* ---------- PROGRAMME PUBLIC ---------- */
 function vProgramme(){const p=sortProg(S.prog);
@@ -463,7 +464,7 @@ const FICHE_Q=[
 const slotRow=()=>`<div class="slot"><input type="text" name="slot_h" placeholder="9h30-10h30" aria-label="Horaire"><input type="text" name="slot_a" placeholder="Activité" aria-label="Activité"><button type="button" class="icon-btn" data-slot-del aria-label="Retirer cette ligne">×</button></div>`;
 function vFiche(){
   return `${phead('Pour les cheftaines d’équipe et les secondes','Fiche de préparation de la sortie','À remplir avant chaque sortie d’équipe.','p7','Guides montrant les pizzas préparées au camp')}
-  ${S.dbState==='static'?'<div class="banner">L’envoi des fiches se fait depuis la version claude.ai du site : demande le lien à tes cheftaines.</div>':''}<div class="banner">Remplis cette fiche avant chaque sortie d’équipe. Elle est envoyée directement aux cheftaines et n’apparaît pas sur le site public.</div>
+  ${S.dbState==='static'?'<div class="banner">Le site n’arrive pas à joindre la base de données : la fiche ne pourra pas être envoyée. Recharge la page dans un instant.</div>':''}<div class="banner">Remplis cette fiche avant chaque sortie d’équipe. Elle est envoyée directement aux cheftaines et n’apparaît pas sur le site public.</div>
   <form id="ficheform" class="card fiche" autocomplete="off">
    <div class="fgrid">
     <label class="f">Équipe<select name="equipe" required>${opt('','Choisir l’équipe',true)}${TEAMS.map(t=>opt(t.id,t.nom)).join('')}</select></label>
@@ -495,7 +496,7 @@ function chefFiches(){const cur=S.filters.ficheTeam||TEAMS[0].id;
 /* ---------- CHEFTAINES ---------- */
 function subtabs(key,list){const cur=S.sub[key]||list[0][0];
   return {cur,html:`<div class="subtabs" role="tablist">${list.map(([k,l])=>`<button role="tab" aria-selected="${k===cur}" data-act="sub" data-key="${key}" data-v="${k}">${l}</button>`).join('')}</div>`}}
-function dbBanner(){if(S.dbState==='static')return `<div class="banner">Version publique en lecture seule. Les tâches, les lieux, les budgets et les fiches se gèrent sur la version claude.ai du site.</div>`;if(S.dbState==='off')return `<div class="banner">Ouvrez ce site connecté·e à claude.ai pour voir et modifier les données partagées (programme, tâches, lieux, budgets).</div>`;
+function dbBanner(){if(S.mode==='claude')return `<div class="banner">Ancienne version du site. Utilisez désormais le lien <b>margauxbouriez-a11y.github.io/scoutvda</b> : c’est là que tout le monde remplit et voit les réponses.</div>`;if(S.dbState==='static')return `<div class="banner">Le site n’arrive pas à joindre la base de données : vous voyez le programme mais rien ne peut être enregistré. Rechargez la page dans un instant.</div>`;if(S.dbState==='off')return `<div class="banner">Ouvrez ce site connecté·e à claude.ai pour voir et modifier les données partagées (programme, tâches, lieux, budgets).</div>`;
   if(S.dbState==='slow')return `<div class="banner">Les données mettent du temps à arriver. Ce qui s’affiche peut ne pas être à jour.</div>`;return ''}
 
 function vChef(){
@@ -663,8 +664,7 @@ main.addEventListener('change',e=>{const el=e.target;
   if(a==='c-toggle'){if(!needDb())return;const m=S.repas.find(r=>r.id===el.dataset.id);if(!m)return;const c=(m.courses||[]).map(x=>({...x}));c[+el.dataset.i].pris=el.checked;save(S.db.doc('repas/'+m.id).update({courses:c}))}
 });
 async function setStatut(team,id,patch,msg){const cur=(S.statuts[team]||{})[id]||{};const val={st:cur.st||'non',note:cur.note||'',...patch,maj:new Date().toISOString()};
-  try{await S.db.doc('statuts/'+team).update({s:{[id]:val}});toast(msg)}catch(e){
-    if(e&&e.code==='invalid_argument'&&!S.statuts[team]){await save(S.db.doc('statuts/'+team).set({s:{[id]:val}}),msg)}else toast(errMsg(e),true)}}
+  await save(S.db.doc('statuts/'+team+'_'+id).set({team,lieu:id,...val}),msg)}
 
 main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.tagName==='SELECT'||b.type==='checkbox')return;const a=b.dataset.act,d=b.dataset;
   switch(a){
@@ -749,18 +749,51 @@ main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||
   }});
 
 /* ---------- data ---------- */
+/* Hors claude.ai, le site lit et écrit dans une data table n8n via deux webhooks. */
+const N8N='https://margauxbouriez2.app.n8n.cloud/webhook/compagnie-vda';
+function makeN8nDb(){
+  const store={},subs=[];let sig='',inflight=0;
+  const isObj=v=>v&&typeof v==='object'&&!Array.isArray(v);
+  const deep=(a,p)=>{const o=isObj(a)?{...a}:{};for(const k in p){o[k]=isObj(p[k])?deep(o[k],p[k]):p[k]}return o};
+  const clone=v=>JSON.parse(JSON.stringify(v));
+  const emit=s=>{if(s.kind==='col'){const pre=s.path+'/';s.cb({docs:Object.keys(store).filter(k=>k.startsWith(pre)).map(k=>({id:k.slice(pre.length),data:()=>store[k]})),metadata:{fromCache:false}})}
+    else{const d=store[s.path];s.cb({id:s.path.split('/')[1],exists:!!d,data:()=>d,metadata:{fromCache:false}})}};
+  const notify=()=>subs.forEach(emit);
+  async function pull(){if(inflight)return;const r=await fetch(N8N+'/data',{cache:'no-store'});if(!r.ok)throw {code:'unavailable'};const j=await r.json();
+    if(inflight)return;const ns={};(j.docs||[]).forEach(x=>{ns[x.c+'/'+x.id]=x.d});const s=JSON.stringify(ns);
+    if(s!==sig){sig=s;Object.keys(store).forEach(k=>delete store[k]);Object.assign(store,ns);notify()}}
+  async function send(body){inflight++;let ok=false;try{const r=await fetch(N8N+'/write',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});ok=r.ok}catch(e){ok=false}
+    finally{inflight--}sig='';pull().catch(()=>{});if(!ok)throw {code:'write_failed'}}
+  const doc=p=>{const i=p.indexOf('/'),c=p.slice(0,i),id=p.slice(i+1);return{
+    set:d=>{store[p]=clone(d);notify();return send({op:'set',c,id,d})},
+    update:d=>{store[p]=deep(store[p]||{},clone(d));notify();return send({op:'update',c,id,d})},
+    delete:()=>{delete store[p];notify();return send({op:'delete',c,id})},
+    onSnapshot:(cb)=>{const s={kind:'doc',path:p,cb};subs.push(s);emit(s);return()=>{}}}};
+  const db={doc,collection:c=>({
+    add:d=>doc(c+'/d'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)).set(d),
+    onSnapshot:(cb)=>{const s={kind:'col',path:c,cb};subs.push(s);emit(s);return()=>{}}})};
+  const tick=()=>{if(document.visibilityState==='visible')pull().catch(()=>{})};
+  setInterval(tick,45000);document.addEventListener('visibilitychange',tick);window.addEventListener('focus',tick);
+  return pull().then(()=>db);
+}
 renderAll(true);
 (async function init(){
   let db=null;try{db=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){db=null}
+  if(db)S.mode='claude';
+  if(!db){try{db=await makeN8nDb();S.mode='n8n'}catch(e){console.error(e);db=null}}
   if(!db){try{const r=await fetch('data/programme.json',{cache:'no-store'});if(!r.ok)throw 0;S.prog=(await r.json()).items||[];S.dbState='static'}catch(e){S.dbState='off'}renderAll(true);return}
   S.db=db;let got=false;const slow=setTimeout(()=>{if(!got){S.dbState='slow';render()}},10000);
   const done=snap=>{if(!snap.metadata.fromCache){got=true;clearTimeout(slow);if(S.dbState!=='ready'){S.dbState='ready'}}};
   const onErr=e=>{console.error(e);got=true;clearTimeout(slow)};
   const coll=(name,key)=>db.collection(name).onSnapshot(s=>{S[key]=s.docs.map(x=>({id:x.id,...x.data()}));done(s);render()},onErr);
   coll('programme','prog');coll('taches','taches');coll('budget','budget');coll('repas','repas');coll('fiches','fiches');
-  db.collection('presences').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=(x.data().r)||{});S.pres=o;done(s);render()},onErr);
+  db.collection('presences').onSnapshot(s=>{const o={};s.docs.forEach(x=>{const d=x.data()||{};
+    if(d.ev&&d.team&&d.name){((o[d.ev]=o[d.ev]||{})[d.team]=(o[d.ev][d.team]||{}))[d.name]=d.v}
+    else if(d.r){for(const t in d.r){for(const n in d.r[t]){const e=(o[x.id]=o[x.id]||{});(e[t]=e[t]||{});if(e[t][n]===undefined)e[t][n]=d.r[t][n]}}}});S.pres=o;done(s);render()},onErr);
   db.collection('equipes').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=x.data());S.equipes=o;done(s);render()},onErr);
-  db.collection('statuts').onSnapshot(s=>{const o={};s.docs.forEach(x=>o[x.id]=(x.data().s)||{});S.statuts=o;done(s);render()},onErr);
+  db.collection('statuts').onSnapshot(s=>{const o={};s.docs.forEach(x=>{const d=x.data()||{};
+    if(d.team&&d.lieu){(o[d.team]=o[d.team]||{})[d.lieu]=d}
+    else if(d.s){const t=(o[x.id]=o[x.id]||{});for(const k in d.s){if(!t[k])t[k]=d.s[k]}}});S.statuts=o;done(s);render()},onErr);
   db.doc('ref/lieux').onSnapshot(s=>{S.lieux=(s.exists&&s.data().items)||[];done(s);render()},onErr);
   db.doc('config/acces').onSnapshot(s=>{S.config=(s.exists&&s.data())||{};done(s)},onErr);
 })();
