@@ -63,7 +63,8 @@
    "rdv": "",
    "titre": "WE Équipe",
    "type": "Week-end",
-   "id": "e05"
+   "id": "e05",
+   "parEquipe": true
   },
   {
    "createdAt": 6,
@@ -102,7 +103,8 @@
    "rdv": "",
    "titre": "Sortie Équipe",
    "type": "Sortie",
-   "id": "e08"
+   "id": "e08",
+   "parEquipe": true
   },
   {
    "createdAt": 9,
@@ -129,7 +131,8 @@
    "rdv": "",
    "titre": "Camp de Pâques",
    "type": "Camp",
-   "id": "e10"
+   "id": "e10",
+   "parEquipe": true
   },
   {
    "createdAt": 11,
