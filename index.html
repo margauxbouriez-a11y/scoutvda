@@ -50,7 +50,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backgroun
 .brand svg{width:30px;height:30px;flex:none}
 .brand b{font-family:var(--f-display);font-weight:400;font-size:1.2rem;letter-spacing:.04em}
 .brand small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
-nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;max-width:100%}
+nav.tabs{display:flex;flex-wrap:wrap;gap:4px;max-width:100%}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs a{color:var(--navy-ink);text-decoration:none;padding:7px 12px;border-radius:999px;white-space:nowrap;font-weight:500;font-size:.95rem;opacity:.82}
 nav.tabs a:hover{opacity:1;background:rgba(255,255,255,.08)}
@@ -218,14 +218,6 @@ tr:last-child td{border-bottom:0}
 .yn .yes[aria-pressed="true"]{background:var(--st-accepte);color:#fff}
 .yn .no[aria-pressed="true"]{background:var(--st-refus);color:#fff}
 @media (max-width:860px){.phead{grid-template-columns:1fr;gap:14px}.phead-img{aspect-ratio:16/9}.teamsec{grid-template-columns:1fr}.teamsec-img{aspect-ratio:16/9}}
-/* sondage */
-.sond th{text-transform:none;letter-spacing:0;font-size:.85rem;color:var(--ink);vertical-align:bottom;min-width:150px}
-.sond th:first-child,.sond td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;min-width:150px}
-.sond thead th:first-child{background:var(--sky)}
-.sond .sd{font-weight:700}
-.sond-acts{display:flex;gap:2px;justify-content:center;margin-top:4px}
-.sond tfoot td{background:var(--sky);font-weight:600}
-.pill.best{background:var(--st-accepte);color:#fff}
 /* modal + toast */
 .ov{position:fixed;inset:0;background:rgba(8,14,36,.55);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
 .modal{background:var(--surface);color:var(--ink);border-radius:12px;width:100%;max-width:560px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:14px}
@@ -348,10 +340,10 @@ const opt=(v,l,sel)=>`<option value="${esc(v)}"${sel?' selected':''}>${esc(l)}</
 const weOptions=sel=>opt('general','Général (hors week-end)',sel==='general'||!sel)+weekends().map(e=>opt(e.id,`${e.titre} · ${fmtD(e.debut)}`,sel===e.id)).join('');
 
 /* ---------- routing ---------- */
-const VIEWS=['accueil','programme','presences','sondage','fiche','cheftaines',...TEAMS.map(t=>t.id)];
+const VIEWS=['accueil','programme','presences','fiche','cheftaines',...TEAMS.map(t=>t.id)];
 function view(){const h=location.hash.replace('#','');return VIEWS.includes(h)?h:'accueil'}
 function renderTabs(){const v=view();const L=(id,l)=>`<a href="#${id}"${v===id?' aria-current="page"':''}>${l}</a>`;
-  $('#tabs').innerHTML=L('accueil','Accueil')+L('programme','Programme')+L('presences','Présences')+L('sondage','Sondage Pâques')+L('fiche','Fiche de préparation')+'<span class="sep" aria-hidden="true"></span>'+L('cheftaines','Espace cheftaines')+'<span class="sep" aria-hidden="true"></span>'+
+  $('#tabs').innerHTML=L('accueil','Accueil')+L('programme','Programme')+L('presences','Présences')+L('fiche','Fiche de préparation')+'<span class="sep" aria-hidden="true"></span>'+L('cheftaines','Espace cheftaines')+'<span class="sep" aria-hidden="true"></span>'+
   TEAMS.map(t=>L(t.id,esc(t.nom))).join('')}
 window.addEventListener('hashchange',()=>{renderAll(true);window.scrollTo(0,0)});
 
@@ -363,7 +355,7 @@ function flushRender(){if(pending){pending=false;render()}}
 main.addEventListener('focusout',()=>setTimeout(flushRender,0));
 
 function renderAll(force){renderTabs();const v=view();let html;
-  if(v==='accueil')html=vAccueil();else if(v==='programme')html=vProgramme();else if(v==='presences')html=vPresences();else if(v==='sondage')html=vSondage();else if(v==='fiche')html=vFiche();else if(v==='cheftaines')html=vChef();else html=vTeam(v);
+  if(v==='accueil')html=vAccueil();else if(v==='programme')html=vProgramme();else if(v==='presences')html=vPresences();else if(v==='fiche')html=vFiche();else if(v==='cheftaines')html=vChef();else html=vTeam(v);
   const y=window.scrollY;main.innerHTML=html;if(!force)window.scrollTo(0,y);applySearch()}
 
 /* ---------- ACCUEIL ---------- */
@@ -429,29 +421,6 @@ function evHtml(e,mode){
       ${e.description?`<div class="desc">${esc(e.description)}</div>`:''}</div>
     ${acts}
   </article>`;
-}
-
-/* ---------- SONDAGE CAMP DE PÂQUES ---------- */
-const campEv=()=>S.prog.find(e=>/p[âa]ques/i.test(e.titre||''));
-function vSondage(){
-  const cur=S.filters.sondTeam||TEAMS[0].id;const ms=members(cur);
-  const head=phead('Camp de Pâques','Sondage des dates','Proposez des dates, puis chaque guide indique si elle est disponible pour chacune.','p6','Une équipe de guides en forêt');
-  const chips=`<div class="seg" style="grid-template-columns:repeat(5,1fr)">${TEAMS.map(t=>{const n=S.sopts.filter(o=>o.team===t.id).length;return `<button class="s-contacte" aria-pressed="${t.id===cur}" data-act="sond-team" data-v="${t.id}"><span class="c">${n}</span><span class="small">${esc(t.nom)} · date${n>1?'s':''} proposée${n>1?'s':''}</span></button>`}).join('')}</div>`;
-  if(S.dbState==='static'||S.dbState==='off')return head+`<div class="empty">Le site n’arrive pas à joindre la base de données. Rechargez la page dans un instant.</div>`;
-  const opts=S.sopts.filter(o=>o.team===cur).sort((a,b)=>(a.debut||'').localeCompare(b.debut||''));
-  const vote={};S.svotes.forEach(v=>{if(v.team===cur)(vote[v.opt]=vote[v.opt]||{})[v.name]=v.v});
-  const ce=campEv();const chosen=ce&&ce.equipes&&ce.equipes[cur]&&ce.equipes[cur].debut;
-  const tool=`<div class="toolbar"><span class="grow small muted">${chosen?`Date retenue pour ${esc(TEAM[cur].nom)} : <b style="color:var(--ink)">${range(ce.equipes[cur].debut,ce.equipes[cur].fin)}</b>`:`Équipe ${esc(TEAM[cur].nom)} : ${opts.length?'chaque guide doit répondre pour chaque date.':'aucune date proposée pour l’instant.'}`}</span><button class="btn" data-act="sond-add" data-team="${cur}">${X} Proposer des dates</button></div>`;
-  if(!opts.length)return head+chips+tool+`<div class="empty">Proposez une ou plusieurs périodes possibles pour le camp de Pâques avec « Proposer des dates ».</div>`;
-  const yes=o=>ms.filter(m=>(vote[o.id]||{})[m]==='oui').length;
-  const best=Math.max(...opts.map(yes));
-  const missing=ms.filter(m=>opts.some(o=>!(vote[o.id]||{})[m]));
-  const table=`<div class="tablewrap sond"><table><thead><tr><th>Guide</th>${opts.map(o=>`<th class="c"><div class="sd">${range(o.debut,o.fin)}</div>${o.note?`<div class="small muted" style="text-transform:none;letter-spacing:0">${esc(o.note)}</div>`:''}
-     <div class="sond-acts"><button class="icon-btn" data-act="sond-pick" data-id="${o.id}" title="Retenir cette date pour le camp">Retenir</button><button class="icon-btn" data-act="sond-del" data-id="${o.id}" aria-label="Supprimer cette date">×</button></div></th>`).join('')}</tr></thead>
-   <tbody>${ms.map(m=>`<tr><td><b>${esc(m)}</b>${opts.some(o=>!(vote[o.id]||{})[m])?' <span class="small" style="color:var(--st-contacte)">· à compléter</span>':''}</td>${opts.map(o=>{const v=(vote[o.id]||{})[m]||'';return `<td class="c"><span class="yn" role="group" aria-label="${esc(m)} · ${esc(range(o.debut,o.fin))}">
-      <button class="yes" aria-pressed="${v==='oui'}" data-act="sond-vote" data-opt="${o.id}" data-team="${cur}" data-name="${esc(m)}" data-v="oui">Oui</button><button class="no" aria-pressed="${v==='non'}" data-act="sond-vote" data-opt="${o.id}" data-team="${cur}" data-name="${esc(m)}" data-v="non">Non</button></span></td>`}).join('')}</tr>`).join('')}</tbody>
-   <tfoot><tr><td><b>Disponibles</b></td>${opts.map(o=>{const n=yes(o);return `<td class="c"><span class="pill${n===best&&n>0?' best':''}">${n}/${ms.length}</span></td>`}).join('')}</tr></tfoot></table></div>`;
-  return head+chips+tool+(missing.length?`<div class="banner">Il manque des réponses : ${missing.map(esc).join(', ')}.</div>`:`<div class="banner">Toute l’équipe a répondu pour chaque date.</div>`)+table;
 }
 
 /* ---------- PRÉSENCES ---------- */
@@ -727,21 +696,6 @@ main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||
        if(ev&&ev.parEquipe){o.debut=fd.get('debut')||'';o.fin=fd.get('fin')||''}
        save(S.db.doc('programme/'+d.id).update({equipes:{[d.team]:o}}),ev&&ev.parEquipe?'Dates et horaires de l’équipe enregistrés':'Horaires de l’équipe enregistrés')});break}
   case 'pres':if(!needDb())return;setPres(d.ev,d.team,d.name,d.v);break;
-  case 'sond-team':S.filters.sondTeam=d.v;renderAll();break;
-  case 'sond-vote':{if(!needDb())return;const ref=S.db.doc('sondage_votes/'+d.opt+'_'+slug(d.name));const cur=(S.svotes.find(v=>v.opt===d.opt&&v.name===d.name)||{}).v;
-    save(cur===d.v?ref.delete():ref.set({opt:d.opt,team:d.team,name:d.name,v:d.v,maj:new Date().toISOString()}));break}
-  case 'sond-add':openModal('Proposer des dates · '+TEAM[d.team].nom,`<p class="small muted" style="margin:0">Ajoutez une période possible. Vous pouvez en proposer plusieurs, une à la fois.</p><div class="fgrid">
-     <label class="f">Du<input type="date" name="debut" required></label><label class="f">Au<input type="date" name="fin"></label>
-     <label class="f full">Remarque <span class="h">facultatif</span><input type="text" name="note" placeholder="Ex. : première semaine des vacances"></label></div>`,
-     fd=>{if(!needDb())return false;const o={team:d.team,debut:fd.get('debut'),fin:fd.get('fin')||'',note:(fd.get('note')||'').trim(),createdAt:Date.now()};
-       if(o.fin&&o.fin<o.debut){toast('La date de fin est avant la date de début.',true);return false}
-       save(S.db.collection('sondage_opts').add(o),'Dates proposées')},'Ajouter');break;
-  case 'sond-del':{const o=S.sopts.find(x=>x.id===d.id);openModal('Supprimer cette date ?',`<p>${o?range(o.debut,o.fin):''} sera retirée du sondage avec ses réponses.</p>`,()=>{if(!needDb())return false;
-    S.svotes.filter(v=>v.opt===d.id).forEach(v=>S.db.doc('sondage_votes/'+v.id).delete().catch(()=>{}));save(S.db.doc('sondage_opts/'+d.id).delete(),'Date supprimée')},'Supprimer');break}
-  case 'sond-pick':{const o=S.sopts.find(x=>x.id===d.id);const ce=campEv();if(!o)break;
-    if(!ce){toast('Ajoutez d’abord un « Camp de Pâques » dans le programme.',true);break}
-    openModal('Retenir cette date ?',`<p>Le camp de Pâques de l’équipe ${esc(TEAM[o.team].nom)} sera indiqué du ${range(o.debut,o.fin)} dans le programme.</p>`,()=>{if(!needDb())return false;
-      save(S.db.doc('programme/'+ce.id).update({equipes:{[o.team]:{debut:o.debut,fin:o.fin||''}}}),'Date du camp enregistrée dans le programme')},'Retenir');break}
   case 'fiche-team':S.filters.ficheTeam=d.v;renderAll();break;
   case 'fiche-lue':if(!needDb())return;save(S.db.doc('fiches/'+d.id).update({lue:true}),'Fiche marquée comme lue');break;
   case 'fiche-del':openModal('Supprimer cette fiche ?','<p>La fiche sera supprimée définitivement.</p>',()=>{if(!needDb())return false;save(S.db.doc('fiches/'+d.id).delete(),'Fiche supprimée')},'Supprimer');break;
@@ -836,7 +790,7 @@ renderAll(true);
   const done=snap=>{if(!snap.metadata.fromCache){got=true;clearTimeout(slow);if(S.dbState!=='ready'){S.dbState='ready'}}};
   const onErr=e=>{console.error(e);got=true;clearTimeout(slow)};
   const coll=(name,key)=>db.collection(name).onSnapshot(s=>{S[key]=s.docs.map(x=>({id:x.id,...x.data()}));done(s);render()},onErr);
-  coll('programme','prog');coll('taches','taches');coll('budget','budget');coll('repas','repas');coll('fiches','fiches');coll('sondage_opts','sopts');coll('sondage_votes','svotes');
+  coll('programme','prog');coll('taches','taches');coll('budget','budget');coll('repas','repas');coll('fiches','fiches');
   db.collection('presences').onSnapshot(s=>{const o={};s.docs.forEach(x=>{const d=x.data()||{};
     if(d.ev&&d.team&&d.name){((o[d.ev]=o[d.ev]||{})[d.team]=(o[d.ev][d.team]||{}))[d.name]=d.v}
     else if(d.r){for(const t in d.r){for(const n in d.r[t]){const e=(o[x.id]=o[x.id]||{});(e[t]=e[t]||{});if(e[t][n]===undefined)e[t][n]=d.r[t][n]}}}});S.pres=o;done(s);render()},onErr);
