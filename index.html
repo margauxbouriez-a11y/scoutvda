@@ -162,6 +162,17 @@ label.f span.h{font-weight:400;color:var(--muted);font-size:.82rem}
 .dot.st-contacte{background:var(--st-contacte);border-color:var(--st-contacte)}
 .dot.st-accepte{background:var(--st-accepte);border-color:var(--st-accepte)}
 .dot.st-refus{background:var(--st-refus);border-color:var(--st-refus)}
+.dot.st-retire{background:transparent;border:2px dashed var(--st-non)}
+.seg.seg7{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.seg .s-retire[aria-pressed="true"]{border-color:var(--st-non);background:var(--st-non-bg)}
+.seg .s-ajout,.seg .s-final{border-style:dashed}
+.seg .s-ajout[aria-pressed="true"],.seg .s-final[aria-pressed="true"]{border-style:solid;border-color:var(--blue);background:var(--sky)}
+.lieu.st-retire{border-left-color:var(--line);opacity:.8}
+.final{border:2px solid var(--st-accepte);border-radius:var(--r);background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:10px;max-width:640px;box-shadow:var(--shadow)}
+.final h2{font-size:1.6rem}
+.final .kv{font-size:.92rem;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0}
+.final .kv dt{color:var(--muted)}
+.final .kv dd{margin:0}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
 table{border-collapse:collapse;width:100%;font-size:.92rem}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -286,7 +297,7 @@ tr:last-child td{border-bottom:0}
 "use strict";
 const TEAMS=[{id:'serval',nom:'Serval'},{id:'renard',nom:'Renard'},{id:'faucon',nom:'Faucon'},{id:'pantheres',nom:'Panthères'},{id:'ocelot',nom:'Ocelot'}];
 const TEAM=Object.fromEntries(TEAMS.map(t=>[t.id,t]));
-const STATUTS=[{id:'non',label:'Non contacté'},{id:'contacte',label:'Contacté'},{id:'accepte',label:'Accepté'},{id:'refus',label:'Refus'}];
+const STATUTS=[{id:'non',label:'Non contacté'},{id:'contacte',label:'Contacté'},{id:'accepte',label:'Accepté'},{id:'refus',label:'Refus'},{id:'retire',label:'À retirer'}];
 const STL=Object.fromEntries(STATUTS.map(s=>[s.id,s.label]));
 const TYPES=['Réunion','Week-end','Camp','Sortie','Messe','Autre'];
 const MOMENTS=['Petit-déjeuner','Déjeuner','Goûter','Dîner'];
@@ -516,9 +527,9 @@ function chefProg(){const p=sortProg(S.prog);
 function chefLieux(){
   const q=S.filters.chefLieuxDep||'';const deps=[...new Set(S.lieux.map(l=>l.dep))];
   const list=S.lieux.filter(l=>!q||l.dep===q);
-  const acc=TEAMS.map(t=>{const s=S.statuts[t.id]||{};const c={non:0,contacte:0,accepte:0,refus:0};S.lieux.forEach(l=>{c[(s[l.id]&&s[l.id].st)||'non']++});return [t,c]});
-  return `<div class="tablewrap" style="margin-bottom:16px"><table><thead><tr><th>Équipe</th><th class="num">Contactés</th><th class="num">Acceptés</th><th class="num">Refus</th></tr></thead><tbody>
-   ${acc.map(([t,c])=>`<tr><td><a href="#${t.id}">${esc(t.nom)}</a></td><td class="num">${c.contacte}</td><td class="num">${c.accepte}</td><td class="num">${c.refus}</td></tr>`).join('')}</tbody></table></div>
+  const acc=TEAMS.map(t=>{const s=S.statuts[t.id]||{};const c={non:0,contacte:0,accepte:0,refus:0,retire:0};S.lieux.forEach(l=>{c[(s[l.id]&&s[l.id].st)||'non']++});return [t,c]});
+  return `<div class="tablewrap" style="margin-bottom:16px"><table><thead><tr><th>Équipe</th><th class="num">Contactés</th><th class="num">Acceptés</th><th class="num">Refus</th><th>Lieu final</th></tr></thead><tbody>
+   ${acc.map(([t,c])=>`<tr><td><a href="#${t.id}">${esc(t.nom)}</a></td><td class="num">${c.contacte}</td><td class="num">${c.accepte}</td><td class="num">${c.refus}</td><td>${(()=>{const f=finalLieu(t.id);return f?esc(f.l.nom):'<span class="muted">—</span>'})()}</td></tr>`).join('')}</tbody></table></div>
   <div class="toolbar"><input class="grow" type="search" id="srch-chef" data-search=".lrow" placeholder="Rechercher un lieu, une ville, un contact…" aria-label="Rechercher un lieu">
    <select id="dep-chef" data-filter="chefLieuxDep" aria-label="Département">${opt('','Tous les départements',!q)}${deps.map(d=>opt(d,d,d===q)).join('')}</select>
    <button class="btn" data-act="lieu-new">${X} Ajouter un lieu</button></div>
@@ -591,18 +602,32 @@ function vTeam(id){const t=TEAM[id];
   const m=members(id);
   return `${phead('Espace équipe','Équipe '+esc(t.nom),m.map(esc).join(' · '),TEAM_IMG[id],'Guides de la compagnie')}${dbBanner()}${st.html}${body}`}
 
+function finalLieu(team){const f=(S.statuts[team]||{}).__final;if(!f||!f.final)return null;const l=S.lieux.find(x=>x.id===f.final);return l?{l,f}:null}
 function teamLieux(id){
   const s=S.statuts[id]||{};const cur=S.filters['lst_'+id]||'non';const dep=S.filters['ldep_'+id]||'';
   const deps=[...new Set(S.lieux.map(l=>l.dep))];
-  const cnt={non:0,contacte:0,accepte:0,refus:0};S.lieux.forEach(l=>cnt[(s[l.id]&&s[l.id].st)||'non']++);
+  const cnt={non:0,contacte:0,accepte:0,refus:0,retire:0};S.lieux.forEach(l=>cnt[(s[l.id]&&s[l.id].st)||'non']++);
+  const mine=S.lieux.filter(l=>l.ajoutPar===id);const fin=finalLieu(id);
+  const seg=`<div class="seg seg7" role="group" aria-label="Catégories de lieux">${STATUTS.map(x=>`<button class="s-${x.id}" aria-pressed="${x.id===cur}" data-act="lst" data-team="${id}" data-v="${x.id}"><span class="c">${cnt[x.id]}</span><span class="small">${x.label}</span></button>`).join('')}
+   <button class="s-ajout" aria-pressed="${cur==='ajout'}" data-act="lst" data-team="${id}" data-v="ajout"><span class="c">${mine.length}</span><span class="small">Ajoutés par l’équipe</span></button>
+   <button class="s-final" aria-pressed="${cur==='final'}" data-act="lst" data-team="${id}" data-v="final"><span class="c">${fin?'✓':'–'}</span><span class="small">Lieu final du week-end</span></button></div>`;
+  if(cur==='ajout')return seg+`<div class="toolbar"><span class="grow small muted">Un lieu qui n’est pas dans la liste ? Ajoutez-le : il rejoint la liste des lieux, dans « Non contacté ».</span><button class="btn" data-act="lieu-new" data-team="${id}">${X} Ajouter un lieu</button></div>
+   ${mine.length?`<div class="lieux">${mine.map(l=>lieuCard(l,s[l.id],id,true)).join('')}</div>`:`<div class="empty">Votre équipe n’a encore ajouté aucun lieu.</div>`}`;
+  if(cur==='final'){
+    if(!fin)return seg+`<div class="empty">Aucun lieu final choisi pour le week-end.<div style="margin-top:12px"><button class="btn" data-act="final-set" data-team="${id}">Choisir le lieu final</button></div></div>`;
+    const l=fin.l,f=fin.f;const kv=[['Ville',[l.ville,l.cp].filter(Boolean).join(' ')],['Adresse',l.adresse],['Trajet',l.temps],['Contact',l.contact],['Fixe',l.fixe],['Portable',l.portable],['Mail / site',l.email]].filter(x=>x[1]&&x[1].trim());
+    return seg+`<article class="final"><div class="eyebrow">Lieu final du week-end · Équipe ${esc(TEAM[id].nom)}</div><h2>${esc(l.nom)}</h2>
+     ${f.note?`<div class="note">${esc(f.note)}</div>`:''}<dl class="kv">${kv.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+     <div class="cta" style="margin-top:4px"><button class="btn" data-act="final-set" data-team="${id}">Modifier</button><button class="btn ghost" data-act="final-del" data-team="${id}">Retirer</button></div></article>`}
   const list=S.lieux.filter(l=>((s[l.id]&&s[l.id].st)||'non')===cur&&(!dep||l.dep===dep));
   if(cur!=='non')list.sort((a,b)=>((s[b.id]||{}).maj||'').localeCompare((s[a.id]||{}).maj||''));
-  return `<div class="seg" role="group" aria-label="Catégories de lieux">${STATUTS.map(x=>`<button class="s-${x.id}" aria-pressed="${x.id===cur}" data-act="lst" data-team="${id}" data-v="${x.id}"><span class="c">${cnt[x.id]}</span><span class="small">${x.label}</span></button>`).join('')}</div>
+  const hint=cur==='retire'?'<p class="small muted" style="margin:0 0 12px">Les lieux mis « À retirer » n’apparaissent plus dans vos recherches. Remettez-les en « Non contacté » pour les retrouver.</p>':'';
+  return seg+hint+`
   <div class="toolbar"><input class="grow" type="search" id="srch-${id}" data-search=".lieu" placeholder="Rechercher un lieu, une ville, un contact…" aria-label="Rechercher un lieu">
    <select id="ldep-${id}" data-filter="ldep_${id}" aria-label="Département">${opt('','Tous les départements',!dep)}${deps.map(d=>opt(d,d,d===dep)).join('')}</select></div>
   ${S.lieux.length?(list.length?`<div class="lieux">${list.map(l=>lieuCard(l,s[l.id],id)).join('')}</div>`:`<div class="empty">Aucun lieu dans « ${STL[cur]} »${dep?' pour ce département':''}. Changez le statut d’un lieu depuis sa carte pour le déplacer ici.</div>`)
    :`<div class="empty">${S.dbState==='loading'?'Chargement des lieux…':'La liste des lieux de camp n’est pas encore disponible.'}</div>`}`}
-function lieuCard(l,st,team){const v=(st&&st.st)||'non';
+function lieuCard(l,st,team,own){const v=(st&&st.st)||'non';
   const kv=[['Ville',[l.ville,l.cp].filter(Boolean).join(' ')],['Adresse',l.adresse],['Trajet',l.temps+(l.transport?` (transports : ${l.transport})`:'')],['Contact',l.contact],['Fixe',l.fixe],['Portable',l.portable],['Mail / site',l.email],['Pour',l.type]].filter(x=>x[1]&&x[1].trim());
   return `<article class="lieu st-${v}" data-s="${esc((l.nom+' '+l.ville+' '+l.contact+' '+l.infos+' '+l.cp+' '+l.adresse).toLowerCase())}">
    <div class="small muted">${esc(l.dep)}</div><h3>${esc(l.nom)}</h3>
@@ -610,7 +635,9 @@ function lieuCard(l,st,team){const v=(st&&st.st)||'non';
    <dl class="kv">${kv.map(([k,val])=>`<dt>${k}</dt><dd>${esc(val)}</dd>`).join('')}</dl>
    ${st&&st.note?`<div class="note">${esc(st.note)}${st.maj?`<div class="small muted">Mis à jour le ${fmtD(st.maj.slice(0,10))}</div>`:''}</div>`:''}
    <div class="foot"><select data-act="lieu-st" data-team="${team}" data-id="${l.id}" aria-label="Statut de ${esc(l.nom)}">${STATUTS.map(x=>opt(x.id,x.label,x.id===v)).join('')}</select>
-   <button class="btn ghost sm" data-act="lieu-note" data-team="${team}" data-id="${l.id}">Note</button></div></article>`}
+   <button class="btn ghost sm" data-act="lieu-note" data-team="${team}" data-id="${l.id}">Note</button></div>
+   ${v==='accepte'?`<button class="btn sm" data-act="final-set" data-team="${team}" data-id="${l.id}">Choisir comme lieu final</button>`:''}
+   ${own?`<button class="btn ghost sm" data-act="lieu-edit" data-id="${l.id}">Modifier / supprimer</button>`:''}</article>`}
 
 /* ---------- BUDGET & REPAS ---------- */
 function budgetView(scope){
@@ -671,6 +698,16 @@ main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||
   case 'sub':S.sub[d.key]=d.v;renderAll();break;
   case 'fiche-again':main.innerHTML=vFiche();break;
   case 'lst':S.filters['lst_'+d.team]=d.v;renderAll();break;
+  case 'final-set':{const f=(S.statuts[d.team]||{}).__final||{};const sel=d.id||f.final||'';const s=S.statuts[d.team]||{};
+    const rk=l=>({accepte:0,contacte:1,non:2,refus:3,retire:4}[(s[l.id]&&s[l.id].st)||'non']);
+    const ls=[...S.lieux].sort((a,b)=>rk(a)-rk(b)||a.nom.localeCompare(b.nom));
+    openModal('Lieu final du week-end · '+TEAM[d.team].nom,`<label class="f">Lieu<select name="final" required>${opt('','Choisir un lieu…',!sel)}${ls.map(l=>opt(l.id,l.nom+(l.ville?' — '+l.ville:'')+((s[l.id]&&s[l.id].st)==='accepte'?' (accepté)':''),l.id===sel)).join('')}</select></label>
+     <label class="f">Précisions <span class="h">dates, horaires, prix, infos pratiques…</span><textarea name="note">${esc(f.note)}</textarea></label>
+     <p class="small muted" style="margin:0">Le lieu n’est pas dans la liste ? Ajoutez-le d’abord depuis « Ajoutés par l’équipe ».</p>`,
+     fd=>{if(!needDb())return false;if(!fd.get('final')){toast('Choisissez un lieu.',true);return false}
+       S.filters['lst_'+d.team]='final';
+       save(S.db.doc('statuts/'+d.team+'_final').set({team:d.team,lieu:'__final',final:fd.get('final'),note:(fd.get('note')||'').trim(),maj:new Date().toISOString()}),'Lieu final enregistré')},'Enregistrer');break}
+  case 'final-del':openModal('Retirer le lieu final ?','<p>Le week-end n’aura plus de lieu final indiqué pour cette équipe.</p>',()=>{if(!needDb())return false;save(S.db.doc('statuts/'+d.team+'_final').delete(),'Lieu final retiré')},'Retirer');break;
   case 'chef-out':S.chefOK=false;try{sessionStorage.removeItem('chefOK')}catch(_){};renderAll();break;
   case 'ev-new':case 'ev-edit':{const ev=a==='ev-edit'?S.prog.find(x=>x.id===d.id):{};
     openModal(a==='ev-new'?'Nouveau rendez-vous':'Modifier le rendez-vous',`<div class="fgrid">
@@ -713,14 +750,14 @@ main.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||
      fd=>{if(!needDb())return false;setStatut(d.team,d.id,{st:fd.get('st'),note:fd.get('note').trim()},'Note enregistrée')});break}
   case 'lieu-new':case 'lieu-edit':{const l=a==='lieu-edit'?S.lieux.find(x=>x.id===d.id):{};const deps=[...new Set(S.lieux.map(x=>x.dep))];
     const F=(n,lab,full)=>`<label class="f${full?' full':''}">${lab}<input type="text" name="${n}" value="${esc(l[n])}"></label>`;
-    openModal(a==='lieu-new'?'Ajouter un lieu de camp':'Modifier le lieu',`<div class="fgrid">${F('nom','Nom du lieu',true)}
+    openModal(a==='lieu-new'?'Ajouter un lieu de camp'+(d.team?' · '+TEAM[d.team].nom:''):'Modifier le lieu',`<div class="fgrid">${F('nom','Nom du lieu',true)}
      <label class="f">Département<input type="text" name="dep" list="deps" value="${esc(l.dep)}"><datalist id="deps">${deps.map(x=>`<option value="${esc(x)}">`).join('')}</datalist></label>
      ${F('ville','Ville')}${F('adresse','Adresse')}${F('cp','Code postal')}${F('contact','Nom du contact')}${F('email','Mail / site')}${F('fixe','Téléphone fixe')}${F('portable','Téléphone portable')}${F('temps','Temps depuis l’église de VDA')}${F('transport','Temps en transports')}${F('type','Pour (équipe, compa, groupe)')}${F('infos','Infos / prix',true)}</div>
      ${a==='lieu-edit'?'<label class="chips" style="margin-top:4px"><label><input type="checkbox" name="suppr" value="1">Supprimer ce lieu de la liste</label></label>':''}`,
      fd=>{if(!needDb())return false;const o={};['nom','dep','ville','adresse','cp','contact','email','fixe','portable','temps','transport','type','infos'].forEach(k=>o[k]=(fd.get(k)||'').trim());
        if(!o.nom){toast('Donnez un nom au lieu.',true);return false}
        let items=S.lieux.map(x=>({...x}));
-       if(a==='lieu-new'){o.id='l'+Date.now().toString(36);items.push(o)}else if(fd.get('suppr'))items=items.filter(x=>x.id!==d.id);else items=items.map(x=>x.id===d.id?{...x,...o}:x);
+       if(a==='lieu-new'){o.id='l'+Date.now().toString(36);if(d.team)o.ajoutPar=d.team;items.push(o)}else if(l.ajoutPar&&!fd.get('suppr')){o.ajoutPar=l.ajoutPar;items=items.map(x=>x.id===d.id?{...x,...o}:x)}else if(fd.get('suppr'))items=items.filter(x=>x.id!==d.id);else items=items.map(x=>x.id===d.id?{...x,...o}:x);
        save(S.db.doc('ref/lieux').set({items}),a==='lieu-new'?'Lieu ajouté':'Lieu mis à jour')});break}
   case 'mem-add':openModal('Ajouter une guide · '+TEAM[d.team].nom,`<label class="f">Prénom<input type="text" name="n" required></label>`,fd=>{if(!needDb())return false;
     const m=[...members(d.team),fd.get('n').trim()];save(S.db.doc('equipes/'+d.team).set({nom:TEAM[d.team].nom,membres:m}),'Guide ajoutée')});break;

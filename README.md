@@ -15,7 +15,7 @@ Site de la compagnie guides du groupe Ville-d'Avray – Sèvres (Bienheureux Fr�
 - **Présences** : chaque guide indique oui ou non pour chaque rendez-vous, équipe par équipe.
 - **Fiche de préparation** : formulaire vide que les équipes remplissent avant chaque sortie ; les réponses n'arrivent que dans l'espace cheftaines.
 - **Espace cheftaines** (code d'accès) : programme, tâches, lieux de camp, budget & repas, fiches reçues par équipe, composition des équipes.
-- **Serval, Renard, Faucon, Panthères, Ocelot** : tâches de l'équipe, suivi des lieux (non contacté / contacté / accepté / refus), budget & repas, horaires et lieu de rendez-vous de l'équipe, et dates des événements d'équipe (WE Équipe, Sortie Équipe, Camp de Pâques).
+- **Serval, Renard, Faucon, Panthères, Ocelot** : tâches de l'équipe, suivi des lieux (non contacté / contacté / accepté / refus / à retirer), ajout d'un lieu absent de la liste, lieu final du week-end, budget & repas, horaires et lieu de rendez-vous de l'équipe, et dates des événements d'équipe (WE Équipe, Sortie Équipe, Camp de Pâques).
 
 ## Où vivent les données
 
